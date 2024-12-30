@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://b6kf03njnyand"]
+
+[ext_resource type="Script" path="res://dev_tabs/drop_down/drop_down_button.gd" id="1_43mmg"]
+
+[node name="drop_down_button" type="Button"]
+script = ExtResource("1_43mmg")

@@ -1,0 +1,25 @@
+[gd_scene load_steps=2 format=3 uid="uid://1av4nnxgw4sq"]
+
+[ext_resource type="Script" path="res://dev_tabs/drop_down/drop_down.gd" id="1_px0qf"]
+
+[node name="drop_down" type="Control"]
+clip_contents = true
+custom_minimum_size = Vector2(200, 138.95)
+layout_mode = 3
+anchor_right = 0.174
+anchor_bottom = 0.154
+offset_right = -200.448
+offset_bottom = -99.792
+size_flags_horizontal = 8
+script = ExtResource("1_px0qf")
+
+[node name="scroller" type="ScrollContainer" parent="."]
+layout_mode = 2
+offset_top = 20.0
+offset_right = 200.0
+offset_bottom = 131.0
+
+[node name="entries" type="VBoxContainer" parent="scroller"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3

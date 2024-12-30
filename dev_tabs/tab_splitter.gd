@@ -10,12 +10,10 @@ func _ready() -> void:
 	get_tree().root.size_changed.connect(_on_viewport_size_changed)
 	split_offset = DisplayServer.window_get_size().x/2.0 as int
 
-
 func _on_viewport_size_changed():
 	if auto_resize:
 		var window_size = get_tree().root.get_viewport().get_size()
 		split_offset = window_size.x/2
-
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
@@ -27,7 +25,6 @@ func _input(event: InputEvent) -> void:
 		auto_resize = true
 		right_clicked = true
 		_on_viewport_size_changed()
-
 
 func _on_dragged(_offset: int) -> void:
 	if auto_resize and not right_clicked:

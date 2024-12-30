@@ -11,6 +11,8 @@ func _ready():
 	var ev = InputEventKey.new()
 	ev.keycode = KEY_F1
 	InputMap.action_add_event("switch_note_mode", ev)
+	
+	#_open_user_directory()
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
@@ -19,4 +21,7 @@ func _input(event: InputEvent) -> void:
 	if Input.is_action_just_released("switch_note_mode"):
 		dev_mode = !dev_mode
 		dev_mode_changed.emit()
-			
+
+
+func _open_user_directory():
+	OS.shell_open(OS.get_user_data_dir())

@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Dev Tabs"
-run/main_scene="res://dev_tabs/notes_n_gdd.tscn"
+run/main_scene="res://dev_tabs/dev_tabs.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 config/icon="res://icon.svg"
 
