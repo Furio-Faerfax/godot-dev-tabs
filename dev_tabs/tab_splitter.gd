@@ -6,11 +6,19 @@ var auto_resize := true
 var dragging := true
 var right_clicked := false
 
+@onready var notes: Control = $notes
+@onready var tab_splitter: HSplitContainer = $"."
+@onready var notes_tab: TabBar = $".."
+
 func _ready() -> void:
 	get_tree().root.size_changed.connect(_on_viewport_size_changed)
 	split_offset = DisplayServer.window_get_size().x/2.0 as int
 
 func _on_viewport_size_changed():
+	tab_splitter.size.x = get_tree().root.get_viewport().get_size().x
+	tab_splitter.size.y = get_tree().root.get_viewport().get_size().y-notes_tab.position.y-2
+	notes._on_screen_resized()
+	
 	if auto_resize:
 		var window_size = get_tree().root.get_viewport().get_size()
 		split_offset = window_size.x/2

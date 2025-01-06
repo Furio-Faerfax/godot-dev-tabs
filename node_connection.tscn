@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://cd72jdopwtsfl"]
+
+[ext_resource type="Script" path="res://dev_tabs/notes/node_connection.gd" id="1_i4g7m"]
+
+[node name="node_connection" type="Node2D"]
+script = ExtResource("1_i4g7m")
+
+[node name="line" type="Line2D" parent="."]
+points = PackedVector2Array(0, 0, 0, 0)
+
+[node name="line2" type="Line2D" parent="line"]
+points = PackedVector2Array(0, 0, 47, 63)
+
+[node name="line3" type="Line2D" parent="line"]
+points = PackedVector2Array(0, 0, -55, 63)

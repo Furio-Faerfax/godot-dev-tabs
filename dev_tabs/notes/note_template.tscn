@@ -1,0 +1,110 @@
+[gd_scene load_steps=3 format=3 uid="uid://m23lnphxjku1"]
+
+[ext_resource type="Texture2D" uid="uid://bf5dn58v0wvf2" path="res://dev_tabs/assets/close.png" id="1_6vmmh"]
+[ext_resource type="Script" path="res://dev_tabs/notes/note_template.gd" id="1_h2ndw"]
+
+[node name="note_template" type="Node2D"]
+script = ExtResource("1_h2ndw")
+
+[node name="container" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 180.0
+offset_bottom = 154.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="container"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 191.0
+offset_bottom = 155.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="note_bar" type="ColorRect" parent="container/VBoxContainer"]
+custom_minimum_size = Vector2(0, 41.11)
+layout_mode = 2
+size_flags_vertical = 0
+color = Color(0.54099, 0.54099, 0.54099, 1)
+
+[node name="note_bar" type="HBoxContainer" parent="container/VBoxContainer/note_bar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -6.0
+offset_bottom = -0.110001
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Button" type="Button" parent="container/VBoxContainer/note_bar/note_bar"]
+layout_mode = 2
+size_flags_horizontal = 10
+size_flags_vertical = 4
+icon = ExtResource("1_6vmmh")
+
+[node name="note_bg" type="ColorRect" parent="container/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+color = Color(0.226707, 0.226707, 0.226707, 1)
+
+[node name="connector" type="Control" parent="container"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 2
+
+[node name="anchors" type="Control" parent="container/connector"]
+visible = false
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="left" type="ColorRect" parent="container/connector/anchors"]
+layout_mode = 0
+offset_left = -5.0
+offset_right = 4.0
+offset_bottom = 309.0
+
+[node name="top" type="ColorRect" parent="container/connector/anchors"]
+layout_mode = 0
+offset_left = -5.0
+offset_top = -4.0
+offset_right = 375.0
+offset_bottom = 4.0
+
+[node name="down" type="ColorRect" parent="container/connector/anchors"]
+layout_mode = 0
+offset_left = -5.0
+offset_top = 304.0
+offset_right = 375.0
+offset_bottom = 312.0
+
+[node name="right" type="ColorRect" parent="container/connector/anchors"]
+layout_mode = 0
+offset_left = 366.0
+offset_right = 375.0
+offset_bottom = 309.0
+
+[node name="anchors_collector" type="Node2D" parent="container/connector/anchors"]
+
+[node name="temp" type="Node2D" parent="container/connector/anchors"]
+
+[node name="anchors2" type="Node2D" parent="container/connector"]
+
+[node name="connections" type="Node2D" parent="container/connector"]
+
+[connection signal="gui_input" from="container/VBoxContainer/note_bar" to="." method="_on_note_bar_gui_input"]
+[connection signal="pressed" from="container/VBoxContainer/note_bar/note_bar/Button" to="." method="_on_button_pressed"]
+[connection signal="gui_input" from="container/connector/anchors/left" to="." method="_on_left_gui_input"]
+[connection signal="mouse_entered" from="container/connector/anchors/left" to="." method="_on_left_mouse_entered"]
+[connection signal="mouse_exited" from="container/connector/anchors/left" to="." method="_on_left_mouse_exited"]
+[connection signal="gui_input" from="container/connector/anchors/top" to="." method="_on_top_gui_input"]
+[connection signal="mouse_entered" from="container/connector/anchors/top" to="." method="_on_top_mouse_entered"]
+[connection signal="mouse_exited" from="container/connector/anchors/top" to="." method="_on_top_mouse_exited"]
+[connection signal="gui_input" from="container/connector/anchors/down" to="." method="_on_down_gui_input"]
+[connection signal="mouse_entered" from="container/connector/anchors/down" to="." method="_on_down_mouse_entered"]
+[connection signal="mouse_exited" from="container/connector/anchors/down" to="." method="_on_down_mouse_exited"]
+[connection signal="gui_input" from="container/connector/anchors/right" to="." method="_on_right_gui_input"]
+[connection signal="mouse_entered" from="container/connector/anchors/right" to="." method="_on_right_mouse_entered"]

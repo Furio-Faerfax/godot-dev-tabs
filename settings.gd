@@ -4,6 +4,12 @@ signal dev_mode_changed()
 
 signal load_editor_first_recent(boo)
 
+signal connection_selection()
+
+
+signal connection_area_entered(id_connection: int, area: String)
+signal connection_area_exited(id_connection: int, area: String)
+
 @onready var root = $"."
 
 var dev_mode = true
@@ -21,6 +27,7 @@ func _ready():
 	var ev = InputEventKey.new()
 	ev.keycode = KEY_F1
 	InputMap.action_add_event("switch_note_mode", ev)
+	
 	
 	#_open_user_directory()
 

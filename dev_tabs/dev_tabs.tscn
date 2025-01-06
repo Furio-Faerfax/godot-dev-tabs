@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://cf8v77spj0qii"]
+[gd_scene load_steps=10 format=3 uid="uid://cf8v77spj0qii"]
 
 [ext_resource type="Script" path="res://dev_tabs/root.gd" id="1_527f6"]
 [ext_resource type="Theme" uid="uid://lfn137rvcqs6" path="res://dev_tabs/disabled_panel_bg.tres" id="2_upsdm"]
@@ -6,6 +6,9 @@
 [ext_resource type="Script" path="res://dev_tabs/tab_splitter.gd" id="4_mecg8"]
 [ext_resource type="Script" path="res://dev_tabs/editor.gd" id="5_b7r6v"]
 [ext_resource type="PackedScene" uid="uid://1av4nnxgw4sq" path="res://dev_tabs/drop_down/drop_down.tscn" id="6_ghe41"]
+[ext_resource type="Script" path="res://dev_tabs/notes/notes.gd" id="7_0s0iu"]
+[ext_resource type="Script" path="res://dev_tabs/notes/field.gd" id="8_1rli7"]
+[ext_resource type="PackedScene" uid="uid://m23lnphxjku1" path="res://dev_tabs/notes/note_template.tscn" id="9_g3f4a"]
 
 [node name="root" type="Control" node_paths=PackedStringArray("hud") groups=["root"]]
 layout_mode = 3
@@ -45,18 +48,20 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 theme = ExtResource("2_upsdm")
-current_tab = 0
+current_tab = 1
 script = ExtResource("3_2x37h")
 
 [node name="game" type="Control" parent="canvas/tabs"]
+visible = false
 clip_contents = true
 layout_mode = 2
 theme = ExtResource("2_upsdm")
 metadata/_tab_index = 0
 
 [node name="notes" type="TabBar" parent="canvas/tabs"]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
@@ -132,14 +137,72 @@ type = "recent_files"
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="notes" type="VBoxContainer" parent="canvas/tabs/notes/tab_splitter"]
+[node name="notes" type="Control" parent="canvas/tabs/notes/tab_splitter"]
 layout_mode = 2
+script = ExtResource("7_0s0iu")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="canvas/tabs/notes/tab_splitter/notes"]
-layout_mode = 2
+[node name="bg" type="ColorRect" parent="canvas/tabs/notes/tab_splitter/notes"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.169245, 0.169245, 0.169245, 1)
 
-[node name="ColorRect" type="ColorRect" parent="canvas/tabs/notes/tab_splitter/notes"]
+[node name="field_bg" type="ColorRect" parent="canvas/tabs/notes/tab_splitter/notes"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 6.0
+offset_top = 74.0
+offset_right = -5.0
+offset_bottom = -6.99994
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.255659, 0.255659, 0.255659, 1)
+
+[node name="tools" type="HBoxContainer" parent="canvas/tabs/notes/tab_splitter/notes"]
 layout_mode = 2
+offset_right = 665.0
+
+[node name="new_note" type="Button" parent="canvas/tabs/notes/tab_splitter/notes/tools"]
+layout_mode = 2
+text = "New Note"
+
+[node name="field_canvas" type="Control" parent="canvas/tabs/notes/tab_splitter/notes"]
+clip_contents = true
+layout_mode = 2
+anchors_preset = 0
+offset_left = 10.0
+offset_top = 78.0
+offset_right = 652.0
+offset_bottom = 607.0
+mouse_filter = 2
+
+[node name="field" type="Control" parent="canvas/tabs/notes/tab_splitter/notes/field_canvas"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("8_1rli7")
+
+[node name="connections" type="Node2D" parent="canvas/tabs/notes/tab_splitter/notes/field_canvas/field"]
+
+[node name="Label" type="Label" parent="canvas/tabs/notes/tab_splitter/notes/field_canvas/field"]
+layout_mode = 0
+offset_left = 190.0
+offset_top = 171.0
+offset_right = 230.0
+offset_bottom = 194.0
+text = "Test"
+
+[node name="note_template" parent="canvas/tabs/notes/tab_splitter/notes/field_canvas/field" node_paths=PackedStringArray("field_bg") instance=ExtResource("9_g3f4a")]
+field_bg = NodePath("../../../field_bg")
 
 [node name="dialogs" type="Node" parent="."]
 
@@ -176,7 +239,9 @@ cancel_button_text = "No"
 [connection signal="toggled" from="canvas/tabs/notes/tab_splitter/editor/tools/autoload_first_recent" to="canvas/tabs/notes/tab_splitter/editor" method="_on_check_button_toggled"]
 [connection signal="drop_button_pressed" from="canvas/tabs/notes/tab_splitter/editor/tools/drop_down" to="canvas/tabs/notes/tab_splitter/editor" method="_on_drop_down_drop_button_pressed"]
 [connection signal="text_changed" from="canvas/tabs/notes/tab_splitter/editor/text" to="canvas/tabs/notes/tab_splitter/editor" method="_on_text_text_changed"]
-[connection signal="canceled" from="dialogs/editor_open_dialog" to="canvas/tabs/notes/tab_splitter/editor" method="_on_file_dialog_canceled"]
+[connection signal="gui_input" from="canvas/tabs/notes/tab_splitter/notes/field_bg" to="canvas/tabs/notes/tab_splitter/notes" method="_on_field_bg_gui_input"]
+[connection signal="pressed" from="canvas/tabs/notes/tab_splitter/notes/tools/new_note" to="canvas/tabs/notes/tab_splitter/notes" method="_on_new_note_pressed"]
+[connection signal="canceled" from="dialogs/editor_open_dialog" to="canvas/tabs/notes/tab_splitter/editor" method="_on_editor_open_dialog_canceled"]
 [connection signal="file_selected" from="dialogs/editor_open_dialog" to="canvas/tabs/notes/tab_splitter/editor" method="_on_file_dialog_file_selected"]
 [connection signal="canceled" from="dialogs/editor_save_dialog" to="canvas/tabs/notes/tab_splitter/editor" method="_on_save_dialog_canceled"]
 [connection signal="file_selected" from="dialogs/editor_save_dialog" to="canvas/tabs/notes/tab_splitter/editor" method="_on_save_dialog_file_selected"]

@@ -1,0 +1,59 @@
+[gd_scene load_steps=2 format=3 uid="uid://c56ie7p8aeq84"]
+
+[ext_resource type="Script" path="res://dev_tabs/notes/node_connection.gd" id="1_5fqgc"]
+
+[node name="connection" type="Node2D"]
+script = ExtResource("1_5fqgc")
+
+[node name="line" type="Line2D" parent="."]
+points = PackedVector2Array(0, 0, 30, 0)
+width = 2.0
+
+[node name="naming" type="Node2D" parent="line"]
+visible = false
+position = Vector2(-68, -24)
+
+[node name="bg" type="ColorRect" parent="line/naming"]
+offset_right = 133.0
+offset_bottom = 49.0
+color = Color(0.197937, 0.197937, 0.197937, 1)
+
+[node name="name_text" type="TextEdit" parent="line/naming"]
+offset_left = 5.0
+offset_top = 6.0
+offset_right = 123.0
+offset_bottom = 43.0
+
+[node name="interact" type="Node2D" parent="line"]
+
+[node name="text" type="Label" parent="line/interact"]
+offset_right = 46.0
+offset_bottom = 23.0
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="interact" type="ColorRect" parent="line/interact"]
+offset_top = -8.0
+offset_right = 25.0
+offset_bottom = 8.0
+mouse_default_cursor_shape = 16
+color = Color(0, 1, 0.683333, 0)
+
+[node name="arrow" type="Node2D" parent="line/interact"]
+
+[node name="arrow_1" type="Line2D" parent="line/interact/arrow"]
+position = Vector2(-29, 0)
+points = PackedVector2Array(16, -11, 30, 0)
+width = 2.0
+
+[node name="arrow_2" type="Line2D" parent="line/interact/arrow"]
+position = Vector2(-29, 1)
+points = PackedVector2Array(16, 11, 30, 0)
+width = 2.0
+
+[node name="selected_timeout" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="gui_input" from="line/naming/name_text" to="." method="_on_name_text_gui_input"]
+[connection signal="gui_input" from="line/interact/interact" to="." method="_on_interact_gui_input"]
+[connection signal="timeout" from="selected_timeout" to="." method="_on_selected_timeout_timeout"]

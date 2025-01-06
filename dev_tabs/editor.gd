@@ -24,9 +24,9 @@ func _ready() -> void:
 func _on_drop_down_drop_button_pressed(_type: Variant, action_content: Variant) -> void:
 	if unsaved_changes:
 		editor_unsaved_dialog.popup()
-		await 1
+		#await 1
 		await editor_unsaved_dialog.visibility_changed
-		await 1
+		#await 1
 		await is_saved
 		unsaved_changes = false
 		document_changed = false
@@ -100,7 +100,7 @@ func _on_file_dialog_file_selected(path: String) -> void:
 func _on_open_pressed() -> void:
 	if unsaved_changes:
 		editor_unsaved_dialog.popup()
-		await 1
+		#await 1
 		await editor_unsaved_dialog.visibility_changed
 	editor_open_dialog.popup()
 
@@ -165,3 +165,7 @@ func autoload_first_recent_setting(boo):
 			else:
 				_on_drop_down_drop_button_pressed("", file.loading(entry[1]))
 				break
+
+
+func _on_editor_open_dialog_canceled() -> void:
+	pass # Replace with function body.
