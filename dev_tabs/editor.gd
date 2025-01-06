@@ -5,7 +5,8 @@ signal is_saved()
 @onready var editor_save_dialog: FileDialog = %editor_save_dialog
 @onready var editor_unsaved_dialog: ConfirmationDialog = %editor_unsaved_dialog
 @onready var drop_down: Control = $tools/drop_down
-@onready var current_document: Label = $current_document
+@onready var current_document: Label = $title_bar/current_document
+@onready var autoload_first_recent: CheckButton = $tools/autoload_first_recent
 @onready var text: TextEdit = $text
 
 var current_title := "Untitled"
@@ -18,6 +19,7 @@ var new_doc = false
 
 func _ready() -> void:
 	current_document.text = current_title
+	Settings.load_editor_first_recent.connect(autoload_first_recent_setting)
 
 func _on_drop_down_drop_button_pressed(_type: Variant, action_content: Variant) -> void:
 	if unsaved_changes:
@@ -26,7 +28,6 @@ func _on_drop_down_drop_button_pressed(_type: Variant, action_content: Variant) 
 		await editor_unsaved_dialog.visibility_changed
 		await 1
 		await is_saved
-		#await able_to_open
 		unsaved_changes = false
 		document_changed = false
 	
@@ -150,3 +151,17 @@ func _on_unsaved_changes_canceled() -> void:
 func _on_unsaved_changes_confirmed() -> void:
 	_on_save_pressed()
 	_on_unsaved_changes_canceled()
+
+
+func _on_check_button_toggled(toggled_on: bool) -> void:
+	Settings.change_setting("autoload_editor_first_recent", toggled_on)
+
+func autoload_first_recent_setting(boo):
+	if boo:
+		autoload_first_recent.set_pressed_no_signal(true)
+		for entry in drop_down.drop_list:
+			if entry[0] == "":
+				continue
+			else:
+				_on_drop_down_drop_button_pressed("", file.loading(entry[1]))
+				break

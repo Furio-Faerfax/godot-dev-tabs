@@ -7,7 +7,7 @@
 [ext_resource type="Script" path="res://dev_tabs/editor.gd" id="5_b7r6v"]
 [ext_resource type="PackedScene" uid="uid://1av4nnxgw4sq" path="res://dev_tabs/drop_down/drop_down.tscn" id="6_ghe41"]
 
-[node name="root" type="Control" groups=["root"]]
+[node name="root" type="Control" node_paths=PackedStringArray("hud") groups=["root"]]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -15,20 +15,26 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_527f6")
+hud = NodePath("game/testHud")
 
 [node name="game" type="Node2D" parent="."]
 position = Vector2(-22, -42)
 
-[node name="game_area" type="Control" parent="."]
+[node name="ColorRect" type="ColorRect" parent="game"]
+offset_left = 143.0
+offset_top = 52.0
+offset_right = 183.0
+offset_bottom = 92.0
+
+[node name="testHud" type="CanvasLayer" parent="game"]
+
+[node name="Label" type="Label" parent="game/testHud"]
+offset_right = 40.0
+offset_bottom = 23.0
+text = "TESTSTST"
+
+[node name="game_area" type="Node2D" parent="."]
 top_level = true
-clip_contents = true
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = 33.0
-grow_horizontal = 2
-grow_vertical = 2
 
 [node name="canvas" type="CanvasLayer" parent="."]
 
@@ -40,17 +46,17 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("2_upsdm")
-current_tab = 1
+current_tab = 0
 script = ExtResource("3_2x37h")
 
 [node name="game" type="Control" parent="canvas/tabs"]
-visible = false
 clip_contents = true
 layout_mode = 2
 theme = ExtResource("2_upsdm")
 metadata/_tab_index = 0
 
 [node name="notes" type="TabBar" parent="canvas/tabs"]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
@@ -65,37 +71,60 @@ color = Color(0.230315, 0.230315, 0.230315, 1)
 
 [node name="tab_splitter" type="HSplitContainer" parent="canvas/tabs/notes"]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchors_preset = -1
+anchor_right = 0.276
+anchor_bottom = 0.853
+offset_right = 834.048
+offset_bottom = 90.699
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("4_mecg8")
 
 [node name="editor" type="VBoxContainer" parent="canvas/tabs/notes/tab_splitter"]
 layout_mode = 2
+size_flags_vertical = 3
 script = ExtResource("5_b7r6v")
 
-[node name="current_document" type="Label" parent="canvas/tabs/notes/tab_splitter/editor"]
+[node name="title_bar" type="HBoxContainer" parent="canvas/tabs/notes/tab_splitter/editor"]
+layout_mode = 2
+
+[node name="current" type="Label" parent="canvas/tabs/notes/tab_splitter/editor/title_bar"]
+layout_mode = 2
+text = "Current Document: "
+
+[node name="current_document" type="Label" parent="canvas/tabs/notes/tab_splitter/editor/title_bar"]
 layout_mode = 2
 
 [node name="tools" type="HBoxContainer" parent="canvas/tabs/notes/tab_splitter/editor"]
+z_index = 1
+clip_contents = true
 layout_mode = 2
+size_flags_vertical = 0
 
 [node name="new" type="Button" parent="canvas/tabs/notes/tab_splitter/editor/tools"]
 layout_mode = 2
+size_flags_vertical = 0
 text = "New"
 
 [node name="open" type="Button" parent="canvas/tabs/notes/tab_splitter/editor/tools"]
 layout_mode = 2
+size_flags_vertical = 0
 text = "Open"
 
 [node name="save" type="Button" parent="canvas/tabs/notes/tab_splitter/editor/tools"]
 layout_mode = 2
+size_flags_vertical = 0
 text = "Save"
 
-[node name="drop_down" parent="canvas/tabs/notes/tab_splitter/editor/tools" instance=ExtResource("6_ghe41")]
+[node name="autoload_first_recent" type="CheckButton" parent="canvas/tabs/notes/tab_splitter/editor/tools"]
 layout_mode = 2
+size_flags_vertical = 0
+text = "Load first"
+
+[node name="drop_down" parent="canvas/tabs/notes/tab_splitter/editor/tools" instance=ExtResource("6_ghe41")]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_vertical = 0
 save_path = "user://recent_files.txt"
 type = "recent_files"
 
@@ -144,6 +173,7 @@ cancel_button_text = "No"
 [connection signal="pressed" from="canvas/tabs/notes/tab_splitter/editor/tools/new" to="canvas/tabs/notes/tab_splitter/editor" method="_on_new_pressed"]
 [connection signal="pressed" from="canvas/tabs/notes/tab_splitter/editor/tools/open" to="canvas/tabs/notes/tab_splitter/editor" method="_on_open_pressed"]
 [connection signal="pressed" from="canvas/tabs/notes/tab_splitter/editor/tools/save" to="canvas/tabs/notes/tab_splitter/editor" method="_on_save_pressed"]
+[connection signal="toggled" from="canvas/tabs/notes/tab_splitter/editor/tools/autoload_first_recent" to="canvas/tabs/notes/tab_splitter/editor" method="_on_check_button_toggled"]
 [connection signal="drop_button_pressed" from="canvas/tabs/notes/tab_splitter/editor/tools/drop_down" to="canvas/tabs/notes/tab_splitter/editor" method="_on_drop_down_drop_button_pressed"]
 [connection signal="text_changed" from="canvas/tabs/notes/tab_splitter/editor/text" to="canvas/tabs/notes/tab_splitter/editor" method="_on_text_text_changed"]
 [connection signal="canceled" from="dialogs/editor_open_dialog" to="canvas/tabs/notes/tab_splitter/editor" method="_on_file_dialog_canceled"]

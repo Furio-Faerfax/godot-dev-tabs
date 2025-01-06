@@ -1,20 +1,24 @@
 extends Control
 
 signal drop_button_pressed(type, action_content)
+@onready var dropper: Button = $dropper
 
+@onready var drop_down: VBoxContainer = $"."
 @onready var entries: VBoxContainer = $scroller/entries
 @export var save_path := ""
 @export var type := ""
-@export var max_recent_files := 10
+@export var max_recent_files := 4
+
 
 const DROP_DOWN_BUTTON = preload("res://dev_tabs/drop_down/drop_down_button.tscn")
 
 var drop_list: Array = []
 var file = dev_tab_file_handler.new()
-
+var list_expanded := false
 
 func _ready() -> void:
 	_gen_list()
+	entries.hide()
 
 func _gen_list():
 	drop_list = file.loading(save_path)
@@ -45,6 +49,10 @@ func _save_list():
 
 func drop_button_pressed_link(_type, action_content):
 	drop_button_pressed.emit(_type, action_content)
+	if list_expanded:
+		list_expanded = false
+		entries.hide()
+		drop_down.custom_minimum_size = Vector2(200.0, 0.0)
 
 func add_new_to_list(new_entry):
 	drop_list.push_front([new_entry[1], str(new_entry[0])+"."+str(new_entry[2])])
@@ -84,3 +92,13 @@ func new_file_saved():
 	
 	_save_list()
 	_gen_list()
+
+
+func _on_dropper_pressed() -> void:
+	list_expanded = !list_expanded
+	if list_expanded:
+		entries.show()
+		drop_down.custom_minimum_size = Vector2(200.0, 138.95)
+	else:
+		entries.hide()
+		drop_down.custom_minimum_size = Vector2(200.0, 0.0)

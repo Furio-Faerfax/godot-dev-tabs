@@ -4,7 +4,8 @@ extends TabContainer
 @onready var root: Control = $"../.."
 @onready var tabs: TabContainer = $"."
 @onready var game_tab: Control = $game
-@onready var game_area: Control = $"../../game_area"
+@onready var game_area: Node2D = $"../../game_area"
+
 @onready var game: Node2D = $"../../game"
 
 var init := true
@@ -32,6 +33,8 @@ func _on_tab_changed(tab: int) -> void:
 		if game:
 			game.hide()
 			game.process_mode = Node.PROCESS_MODE_DISABLED
+			root.hud.hide()
 	else:
 		game.show()
 		game.process_mode = Node.PROCESS_MODE_INHERIT
+		root.hud.show()
