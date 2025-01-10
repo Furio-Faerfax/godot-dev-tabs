@@ -45,3 +45,14 @@ func _on_new_note_pressed() -> void:
 	inst.field_bg = field_bg
 	inst._node_id = note_ids
 	field.add_child(inst)
+
+
+func _on_save_notes_pressed() -> void:
+	for each in field.get_child_count():
+		if each == 0:
+			continue
+		print(field.get_child(each).get_data())
+		
+	
+	for each in field.get_child(0).get_children():
+		print(each.get_data())

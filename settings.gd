@@ -15,6 +15,10 @@ signal connection_area_exited(id_connection: int, area: String)
 var dev_mode = true
 var note_mode = true
 
+var mouse_note_connection_cursor: ColorRect
+var mouse_note_connection_cursor_active: ColorRect
+var focused_note_connection
+var mouse_in_note_connection_border := false
 var settings :Dictionary = {"autoload_editor_first_recent": false}
 
 var _file = dev_tab_file_handler.new()
@@ -28,8 +32,17 @@ func _ready():
 	ev.keycode = KEY_F1
 	InputMap.action_add_event("switch_note_mode", ev)
 	
+	##These are only to get away the Warning in Console
+	connection_selection.connect(_into_void_2)
+	connection_area_entered.connect(_into_void)
+	connection_area_exited.connect(_into_void)
 	
 	#_open_user_directory()
+
+func _into_void(_i, _a):
+	pass
+func _into_void_2():
+	pass
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):

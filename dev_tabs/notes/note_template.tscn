@@ -26,6 +26,7 @@ grow_vertical = 2
 custom_minimum_size = Vector2(0, 41.11)
 layout_mode = 2
 size_flags_vertical = 0
+mouse_default_cursor_shape = 6
 color = Color(0.54099, 0.54099, 0.54099, 1)
 
 [node name="note_bar" type="HBoxContainer" parent="container/VBoxContainer/note_bar"]
@@ -65,6 +66,8 @@ layout_mode = 0
 offset_left = -5.0
 offset_right = 4.0
 offset_bottom = 309.0
+mouse_default_cursor_shape = 3
+color = Color(1, 1, 1, 0)
 
 [node name="top" type="ColorRect" parent="container/connector/anchors"]
 layout_mode = 0
@@ -72,6 +75,8 @@ offset_left = -5.0
 offset_top = -4.0
 offset_right = 375.0
 offset_bottom = 4.0
+mouse_default_cursor_shape = 3
+color = Color(1, 1, 1, 0)
 
 [node name="down" type="ColorRect" parent="container/connector/anchors"]
 layout_mode = 0
@@ -79,12 +84,14 @@ offset_left = -5.0
 offset_top = 304.0
 offset_right = 375.0
 offset_bottom = 312.0
+color = Color(1, 1, 1, 0)
 
 [node name="right" type="ColorRect" parent="container/connector/anchors"]
 layout_mode = 0
 offset_left = 366.0
 offset_right = 375.0
 offset_bottom = 309.0
+color = Color(1, 1, 1, 0)
 
 [node name="anchor_collector" type="Node2D" parent="container/connector/anchors"]
 

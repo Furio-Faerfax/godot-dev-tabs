@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://dev_tabs/notes/input_output_anchor.gd" id="1_3ay1g"]
 
 [node name="input_anchor" type="ColorRect"]
+visible = false
 offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("1_3ay1g")
