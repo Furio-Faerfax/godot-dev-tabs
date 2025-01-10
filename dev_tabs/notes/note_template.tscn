@@ -56,7 +56,6 @@ offset_bottom = 40.0
 mouse_filter = 2
 
 [node name="anchors" type="Control" parent="container/connector"]
-visible = false
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
@@ -87,13 +86,11 @@ offset_left = 366.0
 offset_right = 375.0
 offset_bottom = 309.0
 
-[node name="anchors_collector" type="Node2D" parent="container/connector/anchors"]
-
-[node name="temp" type="Node2D" parent="container/connector/anchors"]
-
-[node name="anchors2" type="Node2D" parent="container/connector"]
+[node name="anchor_collector" type="Node2D" parent="container/connector/anchors"]
 
 [node name="connections" type="Node2D" parent="container/connector"]
+
+[node name="input_output_tmp" type="Node2D" parent="container/connector"]
 
 [connection signal="gui_input" from="container/VBoxContainer/note_bar" to="." method="_on_note_bar_gui_input"]
 [connection signal="pressed" from="container/VBoxContainer/note_bar/note_bar/Button" to="." method="_on_button_pressed"]

@@ -12,10 +12,10 @@ class_name node_connection
 
 @onready var selected_timeout: Timer = $selected_timeout
 
-var point_a = Vector2()
-var point_b = Vector2(10,10)
+var point_a := Vector2()
+var point_b := Vector2(10,10)
 
-
+var is_connecting := false
 
 
 
@@ -34,55 +34,44 @@ var target :Vector2 :
 	set(vec):
 		target = vec
 		if line:
-			adjust_position()
+			#adjust_position()
+			pass
  	
-var anchor_1
-var anchor_2
+var note_1
+var note_2
 
 var input
 var output
 
-var is_valid = false
 var start :Vector2
 
 var arrow_1_target: Vector2
 var arrow_2_target: Vector2
+@onready var connections_field: Node2D = %connections_field
 
 
 
 func _ready() -> void:
-	#arrow_1_target = arrow_1.points[1] - arrow_1.points[0]
-	#arrow_2_target = arrow_2.points[1] - arrow_2.points[0]
-	#text = "lorem"
 	adjust_target()
-	adjust_position()
 	self.z_index = 100
 	naming.z_index = 101
 	Settings.connection_selection.connect(connection_selected)
-	
-	
-	line.points[0] = point_a
-	line.points[1] = point_b
-	
+
 func _process(_delta: float) -> void:
 	if text != text_ and text_ != "" and text_init:
 		text = text_
 		text_init = false
-		
 	
-	
-	#target = get_local_mouse_position()
-
-	
-	#line_3.points[1] = point_b
-	#line_2.points[1] = point_b
-	
-	#line_3.points[0] = point_b-Vector2(5,5)
-
+	if is_connecting:
+		point_a = output.position
+		point_b = input.position
+		line.points[0] = point_a
+		line.points[1] = point_b
+	else:
+		self.reparent(connections_field)
 
 func _on_interact_gui_input(event: InputEvent) -> void:
 	pass # Replace with function body.
-
 
 func _on_name_text_gui_input(event: InputEvent) -> void:
 	pass # Replace with function body.
@@ -100,32 +89,7 @@ func _change_color(val):
 	arrow_2.default_color = val
 
 func adjust_target():
-	if output:
-		start = output.get_position()+anchor_1.node_type.get_position()
-	if input:
-		target = (input.get_position()+anchor_2.node_type.get_position())
-	
-func adjust_position():
-	self.position = start
-	if line:
-		line.points[1] = target-self.position
-	var distance_start_target: float = target.distance_to(start)
-	var dir = target.direction_to(start)
-	var dirgree = dir.x * dir.y
-	if interact:
-		interact.rotation_degrees = dirgree
-		print(interact)
-		if interact:
-			interact.size.x = distance_start_target
-		interact.get_node("../text").size.x = distance_start_target
-		$line/interact/arrow.position.x = distance_start_target
-		#naming.position = Vector2(start.x - start.distance_to(target) / 2, start.y - start.distance_to(target)/ 2)
-		var angle = start.angle_to_point(target)
-		interact.get_node("..").rotate(angle)
-			
-		#if arrow_1:
-		#	arrow_1.points[1] = target
-	#		arrow_1.points[0] = target-self.position
-	#	if arrow_2:
-	#		arrow_2.points[1] = target-self.position
-	#		arrow_2.points[0] = arrow_2.points[1] - arrow_2_target
+	if note_1 and note_2:
+		target = input.position+note_2.get_global_transform()[2]-(note_1.get_global_transform()[2])
+
+	line.points[1] = target

@@ -11,3 +11,9 @@ var type: String:
 	set(val):
 		name = val
 		type = val
+
+var is_connecting := false
+
+func set_to_pos(vec) -> void:
+	position = vec
+		

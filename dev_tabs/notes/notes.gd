@@ -12,6 +12,7 @@ const NOTE_TEMPLATE = preload("res://dev_tabs/notes/note_template.tscn")
 var field_drag = false
 var offset = Vector2()
 
+var note_ids := -1
 
 func _ready() -> void:
 	pass # Replace with function body.
@@ -38,8 +39,9 @@ func _on_screen_resized():
 	field_canvas.size.x = field_bg.size.x -25
 	field_canvas.size.y = get_tree().root.get_viewport().get_size().y-field_canvas.position.y-45
 
-
 func _on_new_note_pressed() -> void:
+	note_ids += 1
 	var inst = NOTE_TEMPLATE.instantiate()
 	inst.field_bg = field_bg
+	inst._node_id = note_ids
 	field.add_child(inst)
