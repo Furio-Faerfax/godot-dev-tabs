@@ -18,12 +18,14 @@ var note_mode = true
 var mouse_note_connection_cursor: ColorRect
 var mouse_note_connection_cursor_active: ColorRect
 var focused_note_connection
+var focused_note
 var mouse_in_note_connection_border := false
 var settings :Dictionary = {"autoload_editor_first_recent": false}
 
 var _file = dev_tab_file_handler.new()
 var user_dir = "user://"
 var setting_file = "settings.txt"
+var note_file = "notes.txt"
 
 ## Adding a input key to the project via code, to ensure that any project includes this feature naturally, disabling later when development is done!
 func _ready():
@@ -31,6 +33,16 @@ func _ready():
 	var ev = InputEventKey.new()
 	ev.keycode = KEY_F1
 	InputMap.action_add_event("switch_note_mode", ev)
+	
+	InputMap.add_action("f2_rename")
+	ev = InputEventKey.new()
+	ev.keycode = KEY_F2
+	InputMap.action_add_event("f2_rename", ev)
+	
+	InputMap.add_action("enter_rename")
+	ev = InputEventKey.new()
+	ev.keycode = KEY_ENTER
+	InputMap.action_add_event("enter_rename", ev)
 	
 	##These are only to get away the Warning in Console
 	connection_selection.connect(_into_void_2)
@@ -51,6 +63,10 @@ func _input(event: InputEvent) -> void:
 	if Input.is_action_just_released("switch_note_mode"):
 		dev_mode = !dev_mode
 		dev_mode_changed.emit()
+		
+	if focused_note_connection != null:
+		if Input.is_action_just_pressed("ui_text_delete"):
+			focused_note_connection.queue_free()
 
 
 func _open_user_directory():

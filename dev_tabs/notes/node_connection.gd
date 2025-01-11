@@ -8,12 +8,11 @@ class_name node_connection
 @onready var naming: Node2D = $line/naming
 @onready var name_text: TextEdit = $line/naming/name_text
 @onready var text_node: Label = $line/interact/text
-@onready var interact: ColorRect = $line/interact/interact
+@onready var interact: Node2D = $line/interact
+@onready var interact_overlay: ColorRect = $line/interact/interact
 
 @onready var selected_timeout: Timer = $selected_timeout
 
-var point_a := Vector2()
-var point_b := Vector2(10,10)
 
 var is_connecting := false
 
@@ -50,9 +49,11 @@ var arrow_2_target: Vector2
 @onready var connections_field: Node2D = null
 
 
-func get_data() -> Dictionary:
-	var data = {"id_1": note_1._node_id, "id_2": note_2._node_id, "input_pos": input.position, "output_pos": output.position, "text": text}
-	return data
+func get_data() -> String:
+	#var data = {"type": "connection", "id_1": note_1._node_id, "id_2": note_2._node_id, "input_pos": input.position, "output_pos": output.position, "text": text}
+	var data_str = "type:connection|id_1:"+str(note_1._node_id)+"|id_2:"+str(note_2._node_id)+"|input_position:"+str(input.position.x)+"_"+str(input.position.y)+"|output_position:"+str(output.position.x)+"_"+str(output.position.y)+"|text:"+str(text)
+
+	return data_str
 
 
 func _ready() -> void:
@@ -60,6 +61,8 @@ func _ready() -> void:
 	self.z_index = 100
 	naming.z_index = 101
 	Settings.connection_selection.connect(connection_selected)
+	
+	interact.position = start
 
 func _process(_delta: float) -> void:
 	if text != text_ and text_ != "" and text_init:
@@ -71,13 +74,35 @@ func _process(_delta: float) -> void:
 		
 	
 	if is_connecting:
-		point_a = output.position
-		point_b = input.position
-		line.points[0] = point_a
-		line.points[1] = point_b
+		start = output.position
+		target = input.position
+		line.points[0] = start
+		line.points[1] = target
+		rotate_overlay()
 	elif !reparentred:
 		reparentred = true
 		self.reparent(connections_field)
+		rotate_overlay()
+		naming.position.x = target.distance_to(start)/2
+		naming.position.y = start.y+target.distance_to(start)/2
+		
+		naming.position = start + (target-start)/2.0
+		naming.show()
+		print(naming.get_parent())
+		name_text.grab_focus()
+
+
+#
+#func _on_interact_gui_input(event: InputEvent) -> void:
+	#if event is InputEventMouseButton:
+		#if event.get_button_index() == 1:
+			#if event.is_action_pressed("mouse_left"):
+				#Events.focused_node = self
+				#Events.connection_selection.emit()
+			#
+		#if event.is_action_pressed("mouse_right"):
+			#Events.focused_node = null
+			#Events.connection_selection.emit()
 
 func _on_interact_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
@@ -86,9 +111,19 @@ func _on_interact_gui_input(event: InputEvent) -> void:
 				Settings.focused_note_connection = self
 				connection_selected()
 
-func _on_name_text_gui_input(_event: InputEvent) -> void:
-	pass # Replace with function body.
-	
+
+func _on_name_text_gui_input(event: InputEvent) -> void:
+	if event.is_action_pressed("enter_rename"):
+		text = naming.get_node("name_text").text
+		naming.hide()
+		
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("f2_rename"):
+		if Settings.focused_note_connection == self:
+			naming.show()
+			naming.get_node("name_text").text = ""
+			name_text.grab_focus()
+
 func connection_selected():
 	if Settings.focused_note_connection == self:
 		_change_color(Color.GREEN)
@@ -109,21 +144,28 @@ func adjust_target():
 	line.points[0] = start
 	line.points[1] = target
 	
-	
-	var distance_start_target: float = target.distance_to(start)
-	var dir = target.direction_to(start)
-	var dirgree = dir.x * dir.y
-	if interact.get_parent():
-		interact.get_parent().rotation_degrees = dirgree
-		interact.size.x = distance_start_target
-		interact.get_parent().get_node("text").size.x = distance_start_target
-		$line/interact/arrow.position.x = distance_start_target
-		#naming.position = Vector2(start.x - start.distance_to(target) / 2, start.y - start.distance_to(target)/ 2)
-		var angle = start.angle_to_point(target)
-		interact.get_parent().rotate(angle)
+	if interact:
+		rotate_overlay()
 	
 
 
 func _on_selected_timeout_timeout() -> void:
 	Settings.focused_note_connection = null
 	connection_selected()
+
+
+
+func rotate_overlay():
+	var distance_start_target: float = target.distance_to(start)
+	#print(target)
+	var dir = target.direction_to(start)
+	var dirgree = dir.x * dir.y
+	interact.rotation_degrees = dirgree
+	interact_overlay.size.x = distance_start_target
+	interact.get_node("text").size.x = distance_start_target
+	$line/interact/arrow.position.x = distance_start_target
+	
+	interact.position = start
+	#naming.position = Vector2(start.x - start.distance_to(target) / 2, start.y - start.distance_to(target)/ 2)
+	var angle = start.angle_to_point(target)
+	interact.rotate(angle)

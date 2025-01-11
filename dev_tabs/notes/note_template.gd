@@ -35,21 +35,23 @@ var new_connection = []
 var title := ""
 var path := ""
 var text := ""
-var color := Color.WHITE
+var _color := Color.WHITE
 var size := Vector2()
 
-func get_data() -> Dictionary:
-	var data = {
-				"note_type": node_type,
-				"id": _node_id,
-				"position":position,
-				"size": size,
-				"title": title,
-				"text": text,
-				"path": path,
-				"color": color,
-				}
-	return data
+func get_data() -> String:
+	#var data = {
+				#"type": node_type,
+				#"id": _node_id,
+				#"position":position,
+				#"size": size,
+				#"title": title,
+				#"text": text,
+				#"path": path,
+				#"color": str(_color.r)+"_"+str(_color.g)+"_"+str(_color.b)+"_"+str(_color.a),
+				#}
+				
+	var data_str = "type:"+str(node_type)+"|id:"+str(_node_id)+"|position:"+str(position.x)+"_"+str(position.y)+"|size:"+str(size.x)+"_"+str(size.y)+"|title:"+str(title)+"|text:"+str(text)+"|path:"+str(path)+"|color:"+str(_color.r)+"_"+str(_color.g)+"_"+str(_color.b)+"_"+str(_color.a)
+	return data_str
 
 func _ready() -> void:
 	Settings.connection_area_entered.connect(connection_entered_area)
@@ -131,6 +133,7 @@ func _on_area_gui_input(event: InputEvent, _area: String) -> void:
 				connected_over.push_back(new_connection[0])
 				connections_sended.push_back(other._node_id)
 				other.connected_over.push_back(new_connection[0])
+				
 				new_connection[0].is_connecting = false
 				new_connection[0].note_2 = other
 				new_connection = []

@@ -9,6 +9,7 @@ extends Control
 
 const NOTE_TEMPLATE = preload("res://dev_tabs/notes/note_template.tscn")
 
+var file = dev_tab_file_handler.new()
 var field_drag = false
 var offset = Vector2()
 
@@ -48,11 +49,27 @@ func _on_new_note_pressed() -> void:
 
 
 func _on_save_notes_pressed() -> void:
+	var data_string :String = ""
+	var index := 0
+	
 	for each in field.get_child_count():
 		if each == 0:
 			continue
-		print(field.get_child(each).get_data())
+		data_string = str(data_string)+str(index)+";"+str(field.get_child(each).get_data())+"\n"
+		index += 1
 		
-	
-	for each in field.get_child(0).get_children():
-		print(each.get_data())
+	for connection_inst in field.get_child(0).get_children():
+		data_string = str(data_string)+str(index)+";"+str(connection_inst.get_data())+"\n"
+		index += 1
+		
+	file.save(str(Settings.user_dir)+str(Settings.note_file), data_string)
+
+
+func clear_field():
+	for entry in field.get_children():
+		if entry.name == "connections":
+			var conecs = entry.get_children()
+			for conec in conecs:
+				conec.queue_free()
+			continue
+		entry.queue_free()

@@ -37,18 +37,16 @@ offset_top = -8.0
 offset_right = 25.0
 offset_bottom = 8.0
 mouse_default_cursor_shape = 16
-color = Color(0.93, 0.155, 0, 1)
+color = Color(0.93, 0.155, 0, 0)
 
 [node name="arrow" type="Node2D" parent="line/interact"]
 
 [node name="arrow_1" type="Line2D" parent="line/interact/arrow"]
-visible = false
 position = Vector2(-29, 0)
 points = PackedVector2Array(16, -11, 30, 0)
 width = 2.0
 
 [node name="arrow_2" type="Line2D" parent="line/interact/arrow"]
-visible = false
 position = Vector2(-29, 1)
 points = PackedVector2Array(16, 11, 30, 0)
 width = 2.0

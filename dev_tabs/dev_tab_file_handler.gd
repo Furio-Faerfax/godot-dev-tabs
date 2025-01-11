@@ -3,7 +3,7 @@ class_name dev_tab_file_handler
 signal file_deleted(path)
 
 
-func save(path, data: String):
+func save(path, data):
 	var file = FileAccess.open(path, FileAccess.WRITE)
 	file.store_line(data)
 	file.close()
