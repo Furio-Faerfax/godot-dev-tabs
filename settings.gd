@@ -44,6 +44,13 @@ func _ready():
 	ev.keycode = KEY_ENTER
 	InputMap.action_add_event("enter_rename", ev)
 	
+	
+	InputMap.add_action("mouse_left_dev_tabs")
+	ev = InputEventMouseButton.new()
+	ev.button_index = MOUSE_BUTTON_LEFT
+	InputMap.action_add_event("mouse_left_dev_tabs", ev)
+	
+	
 	##These are only to get away the Warning in Console
 	connection_selection.connect(_into_void_2)
 	connection_area_entered.connect(_into_void)

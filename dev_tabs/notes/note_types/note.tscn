@@ -1,11 +1,12 @@
-[gd_scene load_steps=4 format=3 uid="uid://m23lnphxjku1"]
+[gd_scene load_steps=5 format=3 uid="uid://c0ylc6ucs0sxg"]
 
-[ext_resource type="Texture2D" uid="uid://bf5dn58v0wvf2" path="res://dev_tabs/assets/close.png" id="1_6vmmh"]
-[ext_resource type="Script" path="res://dev_tabs/notes/note_template.gd" id="1_h2ndw"]
-[ext_resource type="Texture2D" uid="uid://nydyn6wekrku" path="res://dev_tabs/assets/choose_color.png" id="3_773yb"]
+[ext_resource type="Script" path="res://dev_tabs/notes/note_template.gd" id="1_f03sl"]
+[ext_resource type="Texture2D" uid="uid://nydyn6wekrku" path="res://dev_tabs/assets/choose_color.png" id="2_55dpy"]
+[ext_resource type="Texture2D" uid="uid://bf5dn58v0wvf2" path="res://dev_tabs/assets/close.png" id="3_xbtm2"]
+[ext_resource type="Script" path="res://dev_tabs/notes/note_types/note.gd" id="4_qsyoe"]
 
-[node name="note_template" type="Node2D"]
-script = ExtResource("1_h2ndw")
+[node name="note" type="Node2D"]
+script = ExtResource("1_f03sl")
 
 [node name="container" type="Control" parent="."]
 layout_mode = 3
@@ -50,7 +51,7 @@ custom_minimum_size = Vector2(0, -28.935)
 layout_mode = 2
 size_flags_horizontal = 10
 size_flags_vertical = 4
-icon = ExtResource("3_773yb")
+icon = ExtResource("2_55dpy")
 
 [node name="ColorRect" type="ColorRect" parent="container/VBoxContainer/note_bar/note_bar/ColorPickerButton"]
 layout_mode = 0
@@ -66,24 +67,33 @@ offset_left = 3.0
 offset_top = 4.0
 offset_right = 37.0
 offset_bottom = 37.0
-texture = ExtResource("3_773yb")
+texture = ExtResource("2_55dpy")
 
 [node name="color_pick_btn" type="Button" parent="container/VBoxContainer/note_bar/note_bar"]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 10
-icon = ExtResource("3_773yb")
+icon = ExtResource("2_55dpy")
 
 [node name="close" type="Button" parent="container/VBoxContainer/note_bar/note_bar"]
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
-icon = ExtResource("1_6vmmh")
+icon = ExtResource("3_xbtm2")
 
 [node name="note_content" type="ColorRect" parent="container/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 color = Color(0.226707, 0.226707, 0.226707, 1)
+script = ExtResource("4_qsyoe")
+
+[node name="TextEdit" type="TextEdit" parent="container/VBoxContainer/note_content"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="connector" type="Control" parent="container"]
 anchors_preset = 0
@@ -135,6 +145,7 @@ color = Color(1, 1, 1, 0)
 [node name="input_output_tmp" type="Node2D" parent="container/connector"]
 
 [node name="resizer" type="ColorRect" parent="container"]
+layout_mode = 0
 offset_left = 358.0
 offset_top = 295.0
 offset_right = 378.0

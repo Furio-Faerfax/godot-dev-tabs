@@ -176,6 +176,14 @@ text = "New Note"
 layout_mode = 2
 text = "Save"
 
+[node name="load_notes" type="Button" parent="canvas/tabs/notes/tab_splitter/notes/tools"]
+layout_mode = 2
+text = "load"
+
+[node name="clear_field" type="Button" parent="canvas/tabs/notes/tab_splitter/notes/tools"]
+layout_mode = 2
+text = "clear"
+
 [node name="field_canvas" type="Control" parent="canvas/tabs/notes/tab_splitter/notes"]
 clip_contents = true
 layout_mode = 2
@@ -237,6 +245,8 @@ cancel_button_text = "No"
 [connection signal="gui_input" from="canvas/tabs/notes/tab_splitter/notes/field_bg" to="canvas/tabs/notes/tab_splitter/notes" method="_on_field_bg_gui_input"]
 [connection signal="pressed" from="canvas/tabs/notes/tab_splitter/notes/tools/new_note" to="canvas/tabs/notes/tab_splitter/notes" method="_on_new_note_pressed"]
 [connection signal="pressed" from="canvas/tabs/notes/tab_splitter/notes/tools/save_notes" to="canvas/tabs/notes/tab_splitter/notes" method="_on_save_notes_pressed"]
+[connection signal="pressed" from="canvas/tabs/notes/tab_splitter/notes/tools/load_notes" to="canvas/tabs/notes/tab_splitter/notes" method="_on_load_notes_pressed"]
+[connection signal="pressed" from="canvas/tabs/notes/tab_splitter/notes/tools/clear_field" to="canvas/tabs/notes/tab_splitter/notes" method="_on_clear_field_pressed"]
 [connection signal="canceled" from="dialogs/editor_open_dialog" to="canvas/tabs/notes/tab_splitter/editor" method="_on_editor_open_dialog_canceled"]
 [connection signal="file_selected" from="dialogs/editor_open_dialog" to="canvas/tabs/notes/tab_splitter/editor" method="_on_file_dialog_file_selected"]
 [connection signal="canceled" from="dialogs/editor_save_dialog" to="canvas/tabs/notes/tab_splitter/editor" method="_on_save_dialog_canceled"]

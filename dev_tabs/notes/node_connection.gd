@@ -27,7 +27,8 @@ var text_: String = ""
 var text: String:
 	set(val):
 		text = val
-		text_node.text = val
+		if text_node:
+			text_node.text = val
 		
 var target :Vector2 :
 	set(vec):
@@ -46,6 +47,8 @@ var start :Vector2
 
 var arrow_1_target: Vector2
 var arrow_2_target: Vector2
+
+var is_on_load = false
 @onready var connections_field: Node2D = null
 
 
@@ -63,6 +66,7 @@ func _ready() -> void:
 	Settings.connection_selection.connect(connection_selected)
 	
 	interact.position = start
+	text = text
 
 func _process(_delta: float) -> void:
 	if text != text_ and text_ != "" and text_init:
@@ -86,11 +90,11 @@ func _process(_delta: float) -> void:
 		naming.position.x = target.distance_to(start)/2
 		naming.position.y = start.y+target.distance_to(start)/2
 		
-		naming.position = start + (target-start)/2.0
-		naming.show()
-		print(naming.get_parent())
-		name_text.grab_focus()
-
+		if !is_on_load:
+			naming.position = start + (target-start)/2.0
+			naming.show()
+			print(naming.get_parent())
+			name_text.grab_focus()
 
 #
 #func _on_interact_gui_input(event: InputEvent) -> void:

@@ -1,11 +1,22 @@
 extends Node2D
 
 
+@onready var container: Control = $container
 @onready var note_template: Node2D = $"."
 @onready var connections: Node2D = $container/connector/connections
 @onready var connections_fiesld: Node2D
 @onready var anchor_collector: Node2D = $container/connector/anchors/anchor_collector
 @onready var input_output_tmp: Node = $container/connector/input_output_tmp
+@onready var resizer: ColorRect = $container/resizer
+@onready var note_bg_: ColorRect = $container/note_bg
+
+@onready var color_picker_button: ColorPickerButton = $container/VBoxContainer/note_bar/note_bar/ColorPickerButton
+@onready var note_content: ColorRect = $container/VBoxContainer/note_content
+
+@onready var left_anchor: ColorRect = $container/connector/anchors/left
+@onready var top_anchor: ColorRect = $container/connector/anchors/top
+@onready var down_anchor: ColorRect = $container/connector/anchors/down
+@onready var right_anchor: ColorRect = $container/connector/anchors/right
 
 @export var field_bg: ColorRect
 @export var connections_received: Array
@@ -19,7 +30,7 @@ const OUTPUT_ANCHOR = preload("res://dev_tabs/notes/output_anchor.tscn")
 var note_drag = false
 var offset = Vector2()
 
-var node_type = "note"
+var note_type = "note_template"
 var _node_id := -1
 var connect_to_id = -1
 
@@ -33,37 +44,40 @@ var output: ColorRect
 var new_connection = []
 
 var title := ""
-var path := ""
+var _path := ""
 var text := ""
-var _color := Color.WHITE
-var size := Vector2()
+var _color := Color(0.227,0.227,0.227,1)
+var _size: Vector2:
+	set(val):
+		_size = val
+		if container:
+			container.size = val
+
+var can_resize := false
+var resize := false
 
 func get_data() -> String:
-	#var data = {
-				#"type": node_type,
-				#"id": _node_id,
-				#"position":position,
-				#"size": size,
-				#"title": title,
-				#"text": text,
-				#"path": path,
-				#"color": str(_color.r)+"_"+str(_color.g)+"_"+str(_color.b)+"_"+str(_color.a),
-				#}
-				
-	var data_str = "type:"+str(node_type)+"|id:"+str(_node_id)+"|position:"+str(position.x)+"_"+str(position.y)+"|size:"+str(size.x)+"_"+str(size.y)+"|title:"+str(title)+"|text:"+str(text)+"|path:"+str(path)+"|color:"+str(_color.r)+"_"+str(_color.g)+"_"+str(_color.b)+"_"+str(_color.a)
+	note_content.fill_data()
+	var data_str = "type:"+str(note_type)+"|id:"+str(_node_id)+"|position:"+str(position.x)+"_"+str(position.y)+"|size:"+str(_size.x)+"_"+str(_size.y)+"|title:"+str(title)+"|text:"+str(text)+"|path:"+str(_path)+"|color:"+str(_color.r)+"_"+str(_color.g)+"_"+str(_color.b)+"_"+str(_color.a)
 	return data_str
 
 func _ready() -> void:
+	if _size == Vector2():
+		_size = container.size
 	Settings.connection_area_entered.connect(connection_entered_area)
 	Settings.connection_area_exited.connect(connection_exited_area)
 	
-
+	note_bg_.size = resizer.position+resizer.size-Vector2(10,10)
+	update_data()
 
 func _process(_delta: float) -> void:
 	if note_drag:
 		note_template.position = field_bg.get_local_mouse_position()+offset
-		for connection in connected_over:
-			connection.adjust_target()
+		for connection in connected_over.size():
+			if connected_over[connection] == null:
+				connected_over.pop_at(connection)
+				break
+			connected_over[connection].adjust_target()
 		
 	if self_connect:
 		if connecting:
@@ -71,7 +85,24 @@ func _process(_delta: float) -> void:
 			input.set_to_pos(get_local_mouse_position())
 		else:
 			pass
+	
+	if resize:
+		resizing()
+	
 
+## For loading the notes
+func update_data():
+	get_node("container").size = _size
+	
+	change_colors(_color)
+	
+	resizer.position = _size+Vector2(180,140)#Dont know why this works this way
+	print(container.size)
+	print("size: ",_size)
+	print(_color)
+	if note_content.get_child_count() > 0:
+		note_content.update_data()
+	
 func _on_area_gui_input(event: InputEvent, _area: String) -> void:
 	if event is InputEventMouseButton:
 		if event.get_button_index() == 1 and event.pressed:
@@ -231,3 +262,48 @@ func _on_exit_connector(side):
 			Settings.mouse_note_connection_cursor_active.set_default_cursor_shape(Control.CURSOR_ARROW)
 		Settings.mouse_note_connection_cursor = null
 #endregion
+
+func _on_resizer_gui_input(event: InputEvent) -> void:
+	if can_resize:
+		if event is InputEventMouseButton:
+			if event.get_button_index() == 1:
+				if event.is_action_pressed("mouse_left_dev_tabs"):
+					resize = true
+				if event.is_action_released("mouse_left_dev_tabs"):
+					resize = false
+
+func _on_resizer_mouse_entered() -> void:
+	can_resize = true
+
+func _on_resizer_mouse_exited() -> void:
+	can_resize = true
+
+func resizing():
+	resizer.position = get_local_mouse_position()-resizer.size/2
+	self._size = resizer.position-Vector2(180,140)#Dont know why this works this way
+	if self._size.x < 100:
+		resizer.position.x = 285-resizer.size.x/2
+		self._size.x = 100
+	if self._size.y < 100:
+		resizer.position.y = 250-resizer.size.y/2
+		self._size.y = 100
+		
+	right_anchor.size.y = resizer.position.y+resizer.size.y
+	right_anchor.position.x = resizer.position.x+resizer.size.x/2
+	left_anchor.size.y = resizer.position.y+resizer.size.y
+	
+	down_anchor.size.x = resizer.position.x+resizer.size.x
+	down_anchor.position.y = resizer.position.y+resizer.size.y/2
+	top_anchor.size.x = resizer.position.x+resizer.size.x
+	
+	note_bg_.size = resizer.position+resizer.size-Vector2(10,10)
+func _on_color_pick_btn_pressed() -> void:
+	color_picker_button.popup()
+
+func _on_color_picker_button_color_changed(color: Color) -> void:
+	self.change_colors(color)
+	_color = color
+
+func change_colors(color: Color):
+	note_content.color = color
+	note_bg_.color = color
