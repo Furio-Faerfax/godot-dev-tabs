@@ -1,0 +1,36 @@
+[gd_scene load_steps=3 format=3 uid="uid://cpvixe6pn4rv"]
+
+[ext_resource type="PackedScene" uid="uid://m23lnphxjku1" path="res://dev_tabs/notes/note_types/note_template.tscn" id="1_ywgj1"]
+[ext_resource type="Script" path="res://dev_tabs/notes/note_types/note_border.gd" id="4_774f4"]
+
+[node name="note_border" instance=ExtResource("1_ywgj1")]
+
+[node name="container" parent="." index="0"]
+mouse_filter = 2
+
+[node name="note_bg" parent="container" index="0"]
+mouse_filter = 2
+
+[node name="VBoxContainer" parent="container" index="1"]
+mouse_filter = 2
+
+[node name="note_bar" parent="container/VBoxContainer/note_bar" index="0"]
+mouse_filter = 2
+
+[node name="note_content" parent="container/VBoxContainer" index="1"]
+mouse_filter = 2
+script = ExtResource("4_774f4")
+
+[node name="hollow" type="Node" parent="container/VBoxContainer/note_content" index="0"]
+
+[node name="anchors" parent="container/connector" index="0"]
+mouse_filter = 2
+
+[connection signal="mouse_entered" from="container/VBoxContainer/note_bar" to="." method="_on_note_bar_mouse_entered"]
+[connection signal="mouse_exited" from="container/VBoxContainer/note_bar" to="." method="_on_note_bar_mouse_exited"]
+[connection signal="mouse_entered" from="container/VBoxContainer/note_bar/note_bar/ColorPickerButton" to="." method="_on_color_picker_button_mouse_entered"]
+[connection signal="mouse_exited" from="container/VBoxContainer/note_bar/note_bar/ColorPickerButton" to="." method="_on_color_picker_button_mouse_exited"]
+[connection signal="popup_closed" from="container/VBoxContainer/note_bar/note_bar/ColorPickerButton" to="." method="_on_color_picker_button_popup_closed"]
+[connection signal="pressed" from="container/VBoxContainer/note_bar/note_bar/ColorPickerButton" to="." method="_on_color_picker_button_pressed"]
+[connection signal="mouse_entered" from="container/VBoxContainer/note_bar/note_bar/close" to="." method="_on_close_mouse_entered"]
+[connection signal="mouse_exited" from="container/VBoxContainer/note_bar/note_bar/close" to="." method="_on_close_mouse_exited"]

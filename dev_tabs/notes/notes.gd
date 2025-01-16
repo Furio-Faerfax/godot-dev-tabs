@@ -7,16 +7,19 @@ extends Control
 @onready var field_canvas: Control = $field_canvas
 @onready var tab_splitter: HSplitContainer = $".."
 @onready var connections_field: Node2D = %connections_field
+
 const NOTE = preload("res://dev_tabs/notes/note_types/note.tscn")
-const NOTE_TEMPLATE = preload("res://dev_tabs/notes/note_template.tscn")
+const NOTE_BORDER = preload("res://dev_tabs/notes/note_types/note_border.tscn")
+const NOTE_TEMPLATE = preload("res://dev_tabs/notes/note_types/note_template.tscn")
+const LABEL = preload("res://dev_tabs/notes/note_types/label.tscn")
+
 const NODE_CONNECTION = preload("res://dev_tabs/notes/node_connection.tscn")
 const OUTPUT_ANCHOR = preload("res://dev_tabs/notes/output_anchor.tscn")
 const INPUT_ANCHOR = preload("res://dev_tabs/notes/input_anchor.tscn")
-
+var note_type = "label"
 var file = dev_tab_file_handler.new()
 var field_drag = false
 var offset = Vector2()
-
 var note_ids := -1
 
 func _ready() -> void:
@@ -39,7 +42,18 @@ func _on_field_bg_gui_input(event: InputEvent) -> void:
  
 func _on_new_note_pressed() -> void:
 	note_ids += 1
-	var inst = NOTE.instantiate()
+	
+	var inst
+	match note_type:
+		"note":
+			inst = NOTE.instantiate()
+		"border":
+			inst = NOTE_BORDER.instantiate()
+		"label":
+			inst = LABEL.instantiate()
+		_:
+			inst = NOTE_TEMPLATE.instantiate()
+			
 	#var inst = NOTE_TEMPLATE.instantiate()
 	inst.field_bg = field_bg
 	inst._node_id = note_ids
@@ -120,13 +134,13 @@ func _on_load_notes_pressed() -> void:
 	spawn_notes_and_connections(dictionaries)
 	
 ## Parsing the Dictionaries to the specified datatypes
-func parsing_loaded_data(notes, connections) -> Array:
-	for note in notes:
+func parsing_loaded_data(_notes, connections) -> Array:
+	for note in _notes:
 		#print(note)
-		notes[note]["id"] = notes[note]["id"] as int
-		notes[note]["position"] = Vector2(notes[note]["position"].split("_")[0] as float, notes[note]["position"].split("_")[1] as float)
-		notes[note]["size"] = Vector2(notes[note]["size"].split("_")[0] as float, notes[note]["size"].split("_")[1] as float)
-		notes[note]["color"] = Color(notes[note]["color"].split("_")[0] as float, notes[note]["color"].split("_")[1] as float, notes[note]["color"].split("_")[2] as float, notes[note]["color"].split("_")[3] as float)
+		_notes[note]["id"] = _notes[note]["id"] as int
+		_notes[note]["position"] = Vector2(_notes[note]["position"].split("_")[0] as float, _notes[note]["position"].split("_")[1] as float)
+		_notes[note]["size"] = Vector2(_notes[note]["size"].split("_")[0] as float, _notes[note]["size"].split("_")[1] as float)
+		_notes[note]["color"] = Color(_notes[note]["color"].split("_")[0] as float, _notes[note]["color"].split("_")[1] as float, _notes[note]["color"].split("_")[2] as float, _notes[note]["color"].split("_")[3] as float)
 		#print(notes[note])
 	
 	for connection in connections:
@@ -135,30 +149,34 @@ func parsing_loaded_data(notes, connections) -> Array:
 		connections[connection]["output_position"] = Vector2(connections[connection]["output_position"].split("_")[0] as float, connections[connection]["output_position"].split("_")[1] as float)
 		connections[connection]["input_position"] = Vector2(connections[connection]["input_position"].split("_")[0] as float, connections[connection]["input_position"].split("_")[1] as float)
 		#print(connections[connection])
-	return [notes, connections]
+	return [_notes, connections]
 #endregion
 
 func spawn_notes_and_connections(dictionaries: Array):
-	var notes = dictionaries[0]
+	var _notes = dictionaries[0]
 	var connections = dictionaries[1]
-	for note in notes:
+	for note in _notes:
 		var skip = false
 		var inst
-		match notes[note]["type"]:
+		match _notes[note]["type"]:
 			"note":
 				inst = NOTE.instantiate()
+			"border":
+				inst = NOTE_BORDER.instantiate()
+			"label":
+				inst = LABEL.instantiate()
 			_:
 				skip = true
 		if !skip:
-			inst._node_id = notes[note]["id"]
-			inst.note_type = notes[note]["type"]
-			inst.position = notes[note]["position"]
-			inst._size = notes[note]["size"]
-			print(inst._size)
-			inst.title = notes[note]["title"]
-			inst.text = notes[note]["text"]
-			inst._path = notes[note]["path"]
-			inst._color = notes[note]["color"]
+			inst._node_id = _notes[note]["id"]
+			inst.note_type = _notes[note]["type"]
+			inst.position = _notes[note]["position"]
+			inst._size = _notes[note]["size"]
+			#print(inst._size)
+			inst.title = _notes[note]["title"]
+			inst.text = _notes[note]["text"]
+			inst._path = _notes[note]["path"]
+			inst._color = _notes[note]["color"]
 			inst.field_bg = field_bg
 			field.add_child(inst)
 		

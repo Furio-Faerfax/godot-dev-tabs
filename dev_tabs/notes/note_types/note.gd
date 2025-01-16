@@ -9,7 +9,7 @@ func _ready() -> void:
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	pass
 	
 func fill_data():
@@ -19,3 +19,6 @@ func fill_data():
 
 func update_data():
 	text_edit.text = note.text
+
+func change_color(_color):
+	pass

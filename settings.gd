@@ -84,14 +84,13 @@ func change_setting(setting, boo):
 	match setting:
 		"autoload_editor_first_recent":
 			settings["autoload_editor_first_recent"] = boo
-			print(boo)
 		_:
 			pass
 	
 	## then, the settings file will be resaved
 	var settings_str = ""
 	for settings_count in settings.size():
-		print(settings_count)
+		#print(settings_count)
 		var key = settings.keys()[settings_count]
 		var value = settings[key]
 		settings_str += str(key)+"|"+str(value)+"\n"

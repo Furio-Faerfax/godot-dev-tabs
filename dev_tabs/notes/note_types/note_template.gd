@@ -18,6 +18,10 @@ extends Node2D
 @onready var down_anchor: ColorRect = $container/connector/anchors/down
 @onready var right_anchor: ColorRect = $container/connector/anchors/right
 
+@onready var note_bar: HBoxContainer = $container/VBoxContainer/note_bar/note_bar
+@onready var title_label: Label = $container/VBoxContainer/note_bar/note_bar/title
+@onready var close: Button = $container/VBoxContainer/note_bar/note_bar/close
+
 @export var field_bg: ColorRect
 @export var connections_received: Array
 @export var connections_sended: Array
@@ -27,6 +31,7 @@ const NODE_CONNECTION = preload("res://dev_tabs/notes/node_connection.tscn")
 const INPUT_ANCHOR = preload("res://dev_tabs/notes/input_anchor.tscn")
 const OUTPUT_ANCHOR = preload("res://dev_tabs/notes/output_anchor.tscn")
 
+var color_choose := false
 var note_drag = false
 var offset = Vector2()
 
@@ -89,19 +94,22 @@ func _process(_delta: float) -> void:
 	if resize:
 		resizing()
 	
-
+func _set_title(title_: String):
+	await ready
+	title_label.text = title_
+	print("MAMAMIA")
 ## For loading the notes
 func update_data():
 	get_node("container").size = _size
 	
 	change_colors(_color)
 	
+	title_label.text = str(title)
 	resizer.position = _size+Vector2(180,140)#Dont know why this works this way
-	print(container.size)
-	print("size: ",_size)
-	print(_color)
+
 	if note_content.get_child_count() > 0:
 		note_content.update_data()
+	resizing()
 	
 func _on_area_gui_input(event: InputEvent, _area: String) -> void:
 	if event is InputEventMouseButton:
@@ -137,8 +145,12 @@ func _on_area_gui_input(event: InputEvent, _area: String) -> void:
 				new_connection.push_back(output)
 				new_connection.push_back(input)
 		if not event.pressed:
+			#print("YOO, connect to ID:", connect_to_id, ", self: ", get_instance_id())
+			#if !wait_for_signal_exited.is_stopped():
+				#await wait_for_signal_exited.timeout
 			if !Settings.mouse_in_note_connection_border:
-				connect_to_id = -1
+				pass #?
+				#connect_to_id = -1
 			if Settings.mouse_note_connection_cursor_active != null:
 				Settings.mouse_note_connection_cursor_active.set_default_cursor_shape(Control.CURSOR_ARROW)
 				Settings.mouse_note_connection_cursor_active = null
@@ -153,6 +165,7 @@ func _on_area_gui_input(event: InputEvent, _area: String) -> void:
 				
 			if temp_id._node_id == self._node_id or temp_id._node_id == -1:
 				#print(new_connection)
+				#print(temp_id._node_id, ", ", _node_id)
 				if new_connection.size() > 0: 
 					for each in new_connection.size():
 						new_connection[each].queue_free()
@@ -173,6 +186,7 @@ func _on_area_gui_input(event: InputEvent, _area: String) -> void:
 
 func _on_button_pressed() -> void:
 	queue_free()
+	pass
 	
 #region dragging function
 func _on_note_bar_gui_input(event: InputEvent) -> void:
@@ -189,11 +203,14 @@ func _on_note_bar_gui_input(event: InputEvent) -> void:
 ## The cursor of the Mouse, gives an visual feedback if it could connect to the note
 #region signal connections
 func connection_entered_area(id_connect: int, _area: String):
+	#print("ENTERED: ", id_connect)
 	if connecting:
 		connect_to_id = id_connect
 		#print("Connecting Note: ", self._node_id, " to: ", instance_from_id(connect_to_id)._node_id)
 
 func connection_exited_area(id_connect: int, _area: String):
+	#print("EXITED: ", id_connect)
+	
 	if connect_to_id != -1 and  not connecting:
 		connect_to_id = id_connect
 		connect_to_id = -1
@@ -241,6 +258,7 @@ func _on_left_mouse_exited() -> void:
 
 func _on_enter_connector(side):
 	can_connect = true
+	#Settings.connection_area_entered.emit(_node_id, side)
 	Settings.connection_area_entered.emit(get_instance_id(), side)
 	Settings.mouse_in_note_connection_border = true
 	if Settings.mouse_note_connection_cursor == null:
@@ -255,13 +273,13 @@ func _on_exit_connector(side):
 	if !connecting:
 		self_connect = false
 
-	Settings.mouse_in_note_connection_border = false
 	if Settings.mouse_note_connection_cursor != null:
 		Settings.mouse_note_connection_cursor.set_default_cursor_shape(Control.CURSOR_ARROW)
 		if Settings.mouse_note_connection_cursor_active != null:
 			Settings.mouse_note_connection_cursor_active.set_default_cursor_shape(Control.CURSOR_ARROW)
 		Settings.mouse_note_connection_cursor = null
-#endregion
+	
+	Settings.mouse_in_note_connection_border = false
 
 func _on_resizer_gui_input(event: InputEvent) -> void:
 	if can_resize:
@@ -277,6 +295,7 @@ func _on_resizer_mouse_entered() -> void:
 
 func _on_resizer_mouse_exited() -> void:
 	can_resize = true
+#endregion
 
 func resizing():
 	resizer.position = get_local_mouse_position()-resizer.size/2
@@ -297,8 +316,10 @@ func resizing():
 	top_anchor.size.x = resizer.position.x+resizer.size.x
 	
 	note_bg_.size = resizer.position+resizer.size-Vector2(10,10)
+
 func _on_color_pick_btn_pressed() -> void:
 	color_picker_button.popup()
+	color_choose = true
 
 func _on_color_picker_button_color_changed(color: Color) -> void:
 	self.change_colors(color)
@@ -307,3 +328,45 @@ func _on_color_picker_button_color_changed(color: Color) -> void:
 func change_colors(color: Color):
 	note_content.color = color
 	note_bg_.color = color
+	if note_content.get_child_count() > 0:
+		note_content.change_color(color)
+
+func _on_note_bar_mouse_exited() -> void:
+	if color_choose:
+		await color_picker_button.popup_closed
+	#note_bar.hide()
+	color_picker_button.hide()
+	close.hide()
+	note_bar.get_parent().color[3] = 0
+	
+
+
+func _on_note_bar_mouse_entered() -> void:
+	#note_bar.show()
+	color_picker_button.show()
+	close.show()
+	note_bar.get_parent().color[3] = 1
+
+
+func _on_color_picker_button_mouse_entered() -> void:
+	_on_note_bar_mouse_entered()
+
+
+func _on_color_picker_button_mouse_exited() -> void:
+	_on_note_bar_mouse_exited()
+
+
+func _on_close_mouse_entered() -> void:
+	_on_note_bar_mouse_entered()
+
+
+func _on_close_mouse_exited() -> void:
+	_on_note_bar_mouse_exited()
+
+
+func _on_color_picker_button_pressed() -> void:
+	color_choose = true
+
+
+func _on_color_picker_button_popup_closed() -> void:
+	color_choose = false

@@ -93,7 +93,7 @@ func _process(_delta: float) -> void:
 		if !is_on_load:
 			naming.position = start + (target-start)/2.0
 			naming.show()
-			print(naming.get_parent())
+			#print(naming.get_parent())
 			name_text.grab_focus()
 
 #
