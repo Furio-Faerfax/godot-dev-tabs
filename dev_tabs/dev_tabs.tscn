@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://cf8v77spj0qii"]
+[gd_scene load_steps=14 format=3 uid="uid://cf8v77spj0qii"]
 
 [ext_resource type="Script" path="res://dev_tabs/root.gd" id="1_527f6"]
 [ext_resource type="Theme" uid="uid://lfn137rvcqs6" path="res://dev_tabs/disabled_panel_bg.tres" id="2_upsdm"]
@@ -8,6 +8,11 @@
 [ext_resource type="PackedScene" uid="uid://1av4nnxgw4sq" path="res://dev_tabs/drop_down/drop_down.tscn" id="6_ghe41"]
 [ext_resource type="Script" path="res://dev_tabs/notes/notes.gd" id="7_0s0iu"]
 [ext_resource type="Script" path="res://dev_tabs/notes/field.gd" id="8_1rli7"]
+[ext_resource type="Script" path="res://dev_tabs/notes/note_selector.gd" id="8_8c7a8"]
+[ext_resource type="PackedScene" uid="uid://ck5ejaqryj7ig" path="res://dev_tabs/notes/note_types/note.tscn" id="9_mmv30"]
+[ext_resource type="PackedScene" uid="uid://dmv4jqjcu7nk0" path="res://dev_tabs/notes/note_types/note_image.tscn" id="10_dahrx"]
+[ext_resource type="PackedScene" uid="uid://cpvixe6pn4rv" path="res://dev_tabs/notes/note_types/note_border.tscn" id="11_5652t"]
+[ext_resource type="PackedScene" uid="uid://djvmlxxg6gobi" path="res://dev_tabs/notes/note_types/label.tscn" id="12_o66sl"]
 
 [node name="root" type="Control" node_paths=PackedStringArray("hud") groups=["root"]]
 layout_mode = 3
@@ -170,6 +175,18 @@ color = Color(0.255659, 0.255659, 0.255659, 1)
 layout_mode = 2
 offset_right = 665.0
 
+[node name="note_selector" type="ScrollContainer" parent="canvas/tabs/notes/tab_splitter/notes/tools"]
+custom_minimum_size = Vector2(162.87, 64.78)
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("8_8c7a8")
+note_types = [ExtResource("9_mmv30"), ExtResource("10_dahrx"), ExtResource("11_5652t"), ExtResource("12_o66sl")]
+
+[node name="entries" type="VBoxContainer" parent="canvas/tabs/notes/tab_splitter/notes/tools/note_selector"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
 [node name="new_note" type="Button" parent="canvas/tabs/notes/tab_splitter/notes/tools"]
 layout_mode = 2
 text = "New Note"
@@ -185,6 +202,11 @@ text = "load"
 [node name="clear_field" type="Button" parent="canvas/tabs/notes/tab_splitter/notes/tools"]
 layout_mode = 2
 text = "clear"
+
+[node name="autoload_notes" type="CheckButton" parent="canvas/tabs/notes/tab_splitter/notes/tools"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "Load first"
 
 [node name="field_canvas" type="Control" parent="canvas/tabs/notes/tab_splitter/notes"]
 clip_contents = true
@@ -249,6 +271,7 @@ cancel_button_text = "No"
 [connection signal="pressed" from="canvas/tabs/notes/tab_splitter/notes/tools/save_notes" to="canvas/tabs/notes/tab_splitter/notes" method="_on_save_notes_pressed"]
 [connection signal="pressed" from="canvas/tabs/notes/tab_splitter/notes/tools/load_notes" to="canvas/tabs/notes/tab_splitter/notes" method="_on_load_notes_pressed"]
 [connection signal="pressed" from="canvas/tabs/notes/tab_splitter/notes/tools/clear_field" to="canvas/tabs/notes/tab_splitter/notes" method="_on_clear_field_pressed"]
+[connection signal="toggled" from="canvas/tabs/notes/tab_splitter/notes/tools/autoload_notes" to="canvas/tabs/notes/tab_splitter/notes" method="_on_autoload_first_recent_toggled"]
 [connection signal="canceled" from="dialogs/editor_open_dialog" to="canvas/tabs/notes/tab_splitter/editor" method="_on_editor_open_dialog_canceled"]
 [connection signal="file_selected" from="dialogs/editor_open_dialog" to="canvas/tabs/notes/tab_splitter/editor" method="_on_file_dialog_file_selected"]
 [connection signal="canceled" from="dialogs/editor_save_dialog" to="canvas/tabs/notes/tab_splitter/editor" method="_on_save_dialog_canceled"]

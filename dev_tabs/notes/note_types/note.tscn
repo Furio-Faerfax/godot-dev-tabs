@@ -1,9 +1,14 @@
-[gd_scene load_steps=3 format=3 uid="uid://ck5ejaqryj7ig"]
+[gd_scene load_steps=4 format=3 uid="uid://ck5ejaqryj7ig"]
 
 [ext_resource type="PackedScene" uid="uid://m23lnphxjku1" path="res://dev_tabs/notes/note_types/note_template.tscn" id="1_liatl"]
 [ext_resource type="Script" path="res://dev_tabs/notes/note_types/note.gd" id="2_xirux"]
 
+[sub_resource type="LabelSettings" id="LabelSettings_xygn4"]
+
 [node name="note" instance=ExtResource("1_liatl")]
+
+[node name="title" parent="container/VBoxContainer/note_bar/note_bar" index="0"]
+label_settings = SubResource("LabelSettings_xygn4")
 
 [node name="note_content" parent="container/VBoxContainer" index="1"]
 script = ExtResource("2_xirux")

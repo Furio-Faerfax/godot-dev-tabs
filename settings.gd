@@ -3,8 +3,10 @@ extends Node
 signal dev_mode_changed()
 
 signal load_editor_first_recent(boo)
+signal note_autoload(boo)
 
 signal connection_selection()
+
 
 
 signal connection_area_entered(id_connection: int, area: String)
@@ -26,9 +28,12 @@ var _file = dev_tab_file_handler.new()
 var user_dir = "user://"
 var setting_file = "settings.txt"
 var note_file = "notes.txt"
-
+func print_signal(str):
+	print(str)
 ## Adding a input key to the project via code, to ensure that any project includes this feature naturally, disabling later when development is done!
 func _ready():
+	
+		
 	InputMap.add_action("switch_note_mode")
 	var ev = InputEventKey.new()
 	ev.keycode = KEY_F1
@@ -49,6 +54,11 @@ func _ready():
 	ev = InputEventMouseButton.new()
 	ev.button_index = MOUSE_BUTTON_LEFT
 	InputMap.action_add_event("mouse_left_dev_tabs", ev)
+	
+	InputMap.add_action("mouse_right_dev_tabs")
+	ev = InputEventMouseButton.new()
+	ev.button_index = MOUSE_BUTTON_RIGHT
+	InputMap.action_add_event("mouse_right_dev_tabs", ev)
 	
 	
 	##These are only to get away the Warning in Console
@@ -84,6 +94,9 @@ func change_setting(setting, boo):
 	match setting:
 		"autoload_editor_first_recent":
 			settings["autoload_editor_first_recent"] = boo
+		"autoload_note":
+			settings["autoload_note"] = boo
+			
 		_:
 			pass
 	
@@ -107,4 +120,8 @@ func load_settings():
 				var boo = true if line[1] == "true" else false
 				settings["autoload_editor_first_recent"] = boo
 				load_editor_first_recent.emit(boo)
+			"autoload_note":
+				var boo = true if line[1] == "true" else false
+				settings["autoload_note"] = boo
+				note_autoload.emit(boo)
 	#print(settings)

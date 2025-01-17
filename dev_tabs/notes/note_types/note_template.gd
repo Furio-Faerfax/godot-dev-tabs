@@ -27,6 +27,7 @@ extends Node2D
 @export var connections_sended: Array
 @export var connected_over: Array
 
+
 const NODE_CONNECTION = preload("res://dev_tabs/notes/node_connection.tscn")
 const INPUT_ANCHOR = preload("res://dev_tabs/notes/input_anchor.tscn")
 const OUTPUT_ANCHOR = preload("res://dev_tabs/notes/output_anchor.tscn")
@@ -60,6 +61,11 @@ var _size: Vector2:
 
 var can_resize := false
 var resize := false
+
+func _ínit():
+	pass
+func init():
+	pass
 
 func get_data() -> String:
 	note_content.fill_data()
@@ -97,7 +103,6 @@ func _process(_delta: float) -> void:
 func _set_title(title_: String):
 	await ready
 	title_label.text = title_
-	print("MAMAMIA")
 ## For loading the notes
 func update_data():
 	get_node("container").size = _size
@@ -326,8 +331,6 @@ func _on_color_picker_button_color_changed(color: Color) -> void:
 	_color = color
 
 func change_colors(color: Color):
-	note_content.color = color
-	note_bg_.color = color
 	if note_content.get_child_count() > 0:
 		note_content.change_color(color)
 

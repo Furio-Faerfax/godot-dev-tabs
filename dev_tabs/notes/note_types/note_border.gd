@@ -9,9 +9,12 @@ extends ColorRect
 
 @onready var note_bg: ColorRect = $"../../note_bg"
 @onready var note_content: ColorRect = $"."
+
+
+const NOTE_TYPE = "border"
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	note.note_type = "border"
+	note.note_type = NOTE_TYPE
 	
 	#v_box_container.mouse_filter = Control.MOUSE_FILTER_PASS
 	#note_bg.mouse_filter = Control.MOUSE_FILTER_PASS
@@ -32,6 +35,8 @@ func update_data():
 	pass
 	
 func change_color(_color):
+	note_content.color = color
+	#note_bg_.color = color
 	note_bg.color =  Color(0,0,0,0)
 	note_content.color = Color(0,0,0,0)
 	

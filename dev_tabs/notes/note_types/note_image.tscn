@@ -1,0 +1,44 @@
+[gd_scene load_steps=4 format=3 uid="uid://dmv4jqjcu7nk0"]
+
+[ext_resource type="PackedScene" uid="uid://m23lnphxjku1" path="res://dev_tabs/notes/note_types/note_template.tscn" id="1_b1m0t"]
+[ext_resource type="Script" path="res://dev_tabs/notes/note_types/note_image.gd" id="2_3iesl"]
+
+[sub_resource type="ImageTexture" id="ImageTexture_0xe8k"]
+
+[node name="note_image" instance=ExtResource("1_b1m0t")]
+
+[node name="note_content" parent="container/VBoxContainer" index="1"]
+script = ExtResource("2_3iesl")
+
+[node name="note_image_open_dialog" type="FileDialog" parent="container/VBoxContainer/note_content" index="0"]
+auto_translate_mode = 1
+title = "Open a File"
+initial_position = 3
+size = Vector2i(275, 180)
+current_screen = 0
+ok_button_text = "Open"
+file_mode = 0
+access = 1
+
+[node name="image" type="TextureRect" parent="container/VBoxContainer/note_content" index="1"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("ImageTexture_0xe8k")
+expand_mode = 2
+stretch_mode = 4
+
+[node name="open" type="Button" parent="container/VBoxContainer/note_content" index="2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Open"
+
+[connection signal="gui_input" from="container/VBoxContainer/note_content/image" to="container/VBoxContainer/note_content" method="_on_image_gui_input"]
+[connection signal="pressed" from="container/VBoxContainer/note_content/open" to="container/VBoxContainer/note_content" method="_on_open_pressed"]

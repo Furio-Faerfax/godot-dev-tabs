@@ -13,4 +13,7 @@ func _ready() -> void:
 	pressed.connect(open)
 
 func open():
-	drop_button_pressed.emit(type, file.loading(file_path))
+	if file:
+		drop_button_pressed.emit(type, file.loading(file_path))
+	else:
+		drop_button_pressed.emit(type, "file loading not possible, missing filehandler")

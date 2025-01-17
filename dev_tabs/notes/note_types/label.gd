@@ -7,15 +7,23 @@ extends ColorRect
 @onready var color_picker_button: ColorPickerButton = $"../note_bar/note_bar/ColorPickerButton"
 @onready var note_bar: ColorRect = $"../note_bar"
 @onready var title: Label = $"../note_bar/note_bar/title"
+@onready var naming: Node2D = $naming
 
-# Called when the node enters the scene tree for the first time.
+const NOTE_TYPE = "label"
+
 func _ready() -> void:
-	note.note_type = "label"
+	#note.color()
+	note.note_type = NOTE_TYPE
 	connector.queue_free()
 	resizer.queue_free()
 	color_picker_button.hide()
 	
-# Called every frame. 'delta' is the elapsed time since the previous frame.
+	
+	if note.title == "":
+		note._color = Color.WHITE
+		naming.show()
+		naming.get_node("name_text").grab_focus()
+
 func _process(_delta: float) -> void:
 	pass
 	
@@ -24,11 +32,21 @@ func fill_data():
 
 
 func update_data():
-	title.text = "HELLO"
 	note_bar.color[3] = 0
 	note_bg.color = Color(0,0,0,0)
 	self.color = Color(0,0,0,0)
 	pass
 
 func change_color(_color):
-	pass
+	#note_content.color = color
+	#note_bg_.color = color
+	title.label_settings.font_color = _color
+
+
+
+
+func _on_name_text_gui_input(event: InputEvent) -> void:
+	if event.is_action_pressed("enter_rename"):
+		title.text = naming.get_node("name_text").text
+		note.title = title.text
+		naming.hide()

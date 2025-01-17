@@ -8,22 +8,24 @@ extends Control
 @onready var tab_splitter: HSplitContainer = $".."
 @onready var connections_field: Node2D = %connections_field
 
+const NOTE_IMAGE = preload("res://dev_tabs/notes/note_types/note_image.tscn")
 const NOTE = preload("res://dev_tabs/notes/note_types/note.tscn")
 const NOTE_BORDER = preload("res://dev_tabs/notes/note_types/note_border.tscn")
 const NOTE_TEMPLATE = preload("res://dev_tabs/notes/note_types/note_template.tscn")
 const LABEL = preload("res://dev_tabs/notes/note_types/label.tscn")
+@onready var autoload_notes: CheckButton = $tools/autoload_notes
 
 const NODE_CONNECTION = preload("res://dev_tabs/notes/node_connection.tscn")
 const OUTPUT_ANCHOR = preload("res://dev_tabs/notes/output_anchor.tscn")
 const INPUT_ANCHOR = preload("res://dev_tabs/notes/input_anchor.tscn")
-var note_type = "label"
+var note_type = "image"
 var file = dev_tab_file_handler.new()
 var field_drag = false
 var offset = Vector2()
 var note_ids := -1
 
 func _ready() -> void:
-	pass # Replace with function body.
+	Settings.note_autoload.connect(_autoload_notes)
 
 func _process(_delta: float) -> void:
 	if field_drag:
@@ -39,6 +41,8 @@ func _on_field_bg_gui_input(event: InputEvent) -> void:
 				offset = field.position-field_bg.get_local_mouse_position()
 			if not event.pressed:
 				field_drag = false
+	if event.is_action_released("mouse_right_dev_tabs"):
+		_on_new_note_pressed()
  
 func _on_new_note_pressed() -> void:
 	note_ids += 1
@@ -51,12 +55,15 @@ func _on_new_note_pressed() -> void:
 			inst = NOTE_BORDER.instantiate()
 		"label":
 			inst = LABEL.instantiate()
+		"image":
+			inst = NOTE_IMAGE.instantiate()
 		_:
 			inst = NOTE_TEMPLATE.instantiate()
 			
 	#var inst = NOTE_TEMPLATE.instantiate()
 	inst.field_bg = field_bg
 	inst._node_id = note_ids
+	inst.position = field.get_local_mouse_position()
 	field.add_child(inst)
 
 func _on_clear_field_pressed() -> void:
@@ -165,6 +172,8 @@ func spawn_notes_and_connections(dictionaries: Array):
 				inst = NOTE_BORDER.instantiate()
 			"label":
 				inst = LABEL.instantiate()
+			"image":
+				inst = NOTE_IMAGE.instantiate()
 			_:
 				skip = true
 		if !skip:
@@ -215,3 +224,14 @@ func spawn_notes_and_connections(dictionaries: Array):
 		connections_field.add_child(inst)
 		#
 		#print(connections[connection])
+
+
+func _on_autoload_first_recent_toggled(toggled_on: bool) -> void:
+	Settings.change_setting("autoload_note", toggled_on)
+
+
+
+func _autoload_notes(boo):
+	if boo:
+		autoload_notes.set_pressed_no_signal(true)
+		_on_load_notes_pressed()
