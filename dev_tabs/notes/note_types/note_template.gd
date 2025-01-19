@@ -1,5 +1,6 @@
 extends Node2D
 
+@onready var rename: Button = $container/VBoxContainer/note_bar/note_bar/rename
 
 @onready var container: Control = $container
 @onready var note_template: Node2D = $"."
@@ -21,6 +22,9 @@ extends Node2D
 @onready var note_bar: HBoxContainer = $container/VBoxContainer/note_bar/note_bar
 @onready var title_label: Label = $container/VBoxContainer/note_bar/note_bar/title
 @onready var close: Button = $container/VBoxContainer/note_bar/note_bar/close
+
+@onready var title_edit: Node2D = $container/VBoxContainer/note_bar/title_edit
+@onready var connector: Control = $container/connector
 
 @export var field_bg: ColorRect
 @export var connections_received: Array
@@ -73,12 +77,23 @@ func get_data() -> String:
 	return data_str
 
 func _ready() -> void:
+	print(_size, self)
+	note_bg_.size = resizer.position+resizer.size-Vector2(10,10)
 	if _size == Vector2():
 		_size = container.size
+		
+	note_bg_.size = _size
+	container.size = _size
+	
+	note_content.size = _size
+	#resizer.position = Vector2(down_anchor.size.x, right_anchor.size.y)
+	#down_anchor.position.x = resizer.position.x
+	#resizing()
+	print("this: ", position)
 	Settings.connection_area_entered.connect(connection_entered_area)
 	Settings.connection_area_exited.connect(connection_exited_area)
-	
-	note_bg_.size = resizer.position+resizer.size-Vector2(10,10)
+	print("YOO")
+	print(resizer.position)
 	update_data()
 
 func _process(_delta: float) -> void:
@@ -111,7 +126,12 @@ func update_data():
 	
 	title_label.text = str(title)
 	resizer.position = _size+Vector2(180,140)#Dont know why this works this way
-
+	down_anchor.size.x = resizer.position.x+resizer.size.x
+	top_anchor.size.x = resizer.position.x+resizer.size.x
+	left_anchor.size.y = resizer.position.y+resizer.size.y
+	right_anchor.size.y = resizer.position.y+resizer.size.y
+	right_anchor.position.x = resizer.position.x+resizer.size.x
+	down_anchor.position.y = resizer.position.y+resizer.size.y
 	if note_content.get_child_count() > 0:
 		note_content.update_data()
 	resizing()
@@ -303,7 +323,9 @@ func _on_resizer_mouse_exited() -> void:
 #endregion
 
 func resizing():
-	resizer.position = get_local_mouse_position()-resizer.size/2
+	if resize:
+		resizer.position = get_local_mouse_position()-resizer.size/2
+		
 	self._size = resizer.position-Vector2(180,140)#Dont know why this works this way
 	if self._size.x < 100:
 		resizer.position.x = 285-resizer.size.x/2
@@ -317,10 +339,11 @@ func resizing():
 	left_anchor.size.y = resizer.position.y+resizer.size.y
 	
 	down_anchor.size.x = resizer.position.x+resizer.size.x
-	down_anchor.position.y = resizer.position.y+resizer.size.y/2
-	top_anchor.size.x = resizer.position.x+resizer.size.x
+	down_anchor.position.y = resizer.position.y+resizer.size.y/2+2
+	top_anchor.size.x = resizer.position.x+resizer.size.x+4
 	
 	note_bg_.size = resizer.position+resizer.size-Vector2(10,10)
+	note_content.size = note_bg_.size
 
 func _on_color_pick_btn_pressed() -> void:
 	color_picker_button.popup()
@@ -340,6 +363,7 @@ func _on_note_bar_mouse_exited() -> void:
 	#note_bar.hide()
 	color_picker_button.hide()
 	close.hide()
+	rename.hide()
 	note_bar.get_parent().color[3] = 0
 	
 
@@ -348,6 +372,7 @@ func _on_note_bar_mouse_entered() -> void:
 	#note_bar.show()
 	color_picker_button.show()
 	close.show()
+	rename.show()
 	note_bar.get_parent().color[3] = 1
 
 
@@ -373,3 +398,24 @@ func _on_color_picker_button_pressed() -> void:
 
 func _on_color_picker_button_popup_closed() -> void:
 	color_choose = false
+
+
+func _on_rename_pressed() -> void:
+	#note._color = Color.WHITE
+	title_edit.show()
+	title_edit.get_node("title_text").grab_focus()
+
+
+func _on_title_text_gui_input(event: InputEvent) -> void:
+	if event.is_action_pressed("enter_rename"):
+		title_label.text = title_edit.get_node("title_text").text
+		title = title_label.text
+		title_edit.hide()
+
+
+func _on_rename_mouse_entered() -> void:
+	_on_note_bar_mouse_entered()
+
+
+func _on_rename_mouse_exited() -> void:
+	_on_note_bar_mouse_exited()

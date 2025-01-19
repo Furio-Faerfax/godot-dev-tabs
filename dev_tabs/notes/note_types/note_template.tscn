@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://m23lnphxjku1"]
+[gd_scene load_steps=5 format=3 uid="uid://m23lnphxjku1"]
 
 [ext_resource type="Texture2D" uid="uid://bf5dn58v0wvf2" path="res://dev_tabs/assets/close.png" id="1_6vmmh"]
 [ext_resource type="Script" path="res://dev_tabs/notes/note_types/note_template.gd" id="1_h2ndw"]
 [ext_resource type="Texture2D" uid="uid://nydyn6wekrku" path="res://dev_tabs/assets/choose_color.png" id="3_773yb"]
+[ext_resource type="Texture2D" uid="uid://b03skln03iqry" path="res://dev_tabs/assets/rename.png" id="3_ayfr2"]
 
 [node name="note_template" type="Node2D"]
 script = ExtResource("1_h2ndw")
@@ -55,7 +56,6 @@ horizontal_alignment = 1
 custom_minimum_size = Vector2(0, -28.935)
 layout_mode = 2
 size_flags_horizontal = 10
-size_flags_vertical = 4
 icon = ExtResource("3_773yb")
 
 [node name="ColorRect" type="ColorRect" parent="container/VBoxContainer/note_bar/note_bar/ColorPickerButton"]
@@ -80,11 +80,32 @@ layout_mode = 2
 size_flags_horizontal = 10
 icon = ExtResource("3_773yb")
 
+[node name="rename" type="Button" parent="container/VBoxContainer/note_bar/note_bar"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+icon = ExtResource("3_ayfr2")
+
 [node name="close" type="Button" parent="container/VBoxContainer/note_bar/note_bar"]
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
 icon = ExtResource("1_6vmmh")
+
+[node name="title_edit" type="Node2D" parent="container/VBoxContainer/note_bar"]
+visible = false
+position = Vector2(43, -1)
+
+[node name="bg" type="ColorRect" parent="container/VBoxContainer/note_bar/title_edit"]
+offset_right = 133.0
+offset_bottom = 49.0
+color = Color(0.197937, 0.197937, 0.197937, 1)
+
+[node name="title_text" type="TextEdit" parent="container/VBoxContainer/note_bar/title_edit"]
+offset_left = 5.0
+offset_top = 6.0
+offset_right = 123.0
+offset_bottom = 43.0
 
 [node name="note_content" type="ColorRect" parent="container/VBoxContainer"]
 layout_mode = 2
@@ -152,7 +173,9 @@ color = Color(1, 1, 1, 0)
 [connection signal="gui_input" from="container/VBoxContainer/note_bar" to="." method="_on_note_bar_gui_input"]
 [connection signal="color_changed" from="container/VBoxContainer/note_bar/note_bar/ColorPickerButton" to="." method="_on_color_picker_button_color_changed"]
 [connection signal="pressed" from="container/VBoxContainer/note_bar/note_bar/color_pick_btn" to="." method="_on_color_pick_btn_pressed"]
+[connection signal="pressed" from="container/VBoxContainer/note_bar/note_bar/rename" to="." method="_on_rename_pressed"]
 [connection signal="pressed" from="container/VBoxContainer/note_bar/note_bar/close" to="." method="_on_button_pressed"]
+[connection signal="gui_input" from="container/VBoxContainer/note_bar/title_edit/title_text" to="." method="_on_title_text_gui_input"]
 [connection signal="gui_input" from="container/connector/anchors/left" to="." method="_on_left_gui_input"]
 [connection signal="mouse_entered" from="container/connector/anchors/left" to="." method="_on_left_mouse_entered"]
 [connection signal="mouse_exited" from="container/connector/anchors/left" to="." method="_on_left_mouse_exited"]

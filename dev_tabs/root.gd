@@ -7,3 +7,7 @@ func _ready() -> void:
 	Settings.note_mode = note_mode_toggle
 	
 	Settings.load_settings()
+
+func _process(delta: float) -> void:
+	#print(get_global_mouse_position())
+	pass

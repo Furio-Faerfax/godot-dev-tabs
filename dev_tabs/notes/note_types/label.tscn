@@ -17,7 +17,6 @@ mouse_filter = 2
 mouse_filter = 2
 
 [node name="title" parent="container/VBoxContainer/note_bar/note_bar" index="0"]
-text = ""
 label_settings = SubResource("LabelSettings_el6bu")
 
 [node name="note_content" parent="container/VBoxContainer" index="1"]
@@ -47,6 +46,8 @@ offset_bottom = 43.0
 [connection signal="mouse_exited" from="container/VBoxContainer/note_bar/note_bar/ColorPickerButton" to="." method="_on_color_picker_button_mouse_exited"]
 [connection signal="popup_closed" from="container/VBoxContainer/note_bar/note_bar/ColorPickerButton" to="." method="_on_color_picker_button_popup_closed"]
 [connection signal="pressed" from="container/VBoxContainer/note_bar/note_bar/ColorPickerButton" to="." method="_on_color_picker_button_pressed"]
+[connection signal="mouse_entered" from="container/VBoxContainer/note_bar/note_bar/rename" to="." method="_on_rename_mouse_entered"]
+[connection signal="mouse_exited" from="container/VBoxContainer/note_bar/note_bar/rename" to="." method="_on_rename_mouse_exited"]
 [connection signal="mouse_entered" from="container/VBoxContainer/note_bar/note_bar/close" to="." method="_on_close_mouse_entered"]
 [connection signal="mouse_exited" from="container/VBoxContainer/note_bar/note_bar/close" to="." method="_on_close_mouse_exited"]
 [connection signal="gui_input" from="container/VBoxContainer/note_content/naming/name_text" to="container/VBoxContainer/note_content" method="_on_name_text_gui_input"]

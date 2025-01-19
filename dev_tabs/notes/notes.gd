@@ -26,6 +26,7 @@ var note_ids := -1
 
 func _ready() -> void:
 	Settings.note_autoload.connect(_autoload_notes)
+	tab_splitter.splitter_is_dragging_now.connect(_on_screen_resized)
 
 func _process(_delta: float) -> void:
 	if field_drag:
@@ -87,6 +88,7 @@ func _on_save_notes_pressed() -> void:
 #endregion
 
 func clear_field():
+	note_ids = -1
 	for entry in field.get_children():
 		if entry.name == "connections_field":
 			var conecs = entry.get_children()
@@ -96,9 +98,10 @@ func clear_field():
 		entry.queue_free()
 
 func _on_screen_resized():
-	#field_bg.size.x = get_tree().root.get_viewport().get_size().x
+	#field_bg.size.x = get_tree().root.get_viewport().get_size().x-notes.position.x-20
 	#field_bg.size.y = get_tree().root.get_viewport().get_size().y-13-10
-	field_canvas.size.x = field_bg.size.x -25
+	field_canvas.size.x = get_tree().root.get_viewport().get_size().x-notes.position.x-20
+	print(field_bg.size)
 	field_canvas.size.y = get_tree().root.get_viewport().get_size().y-field_canvas.position.y-45
 
 #region Loading and Parsing the Note File
@@ -187,6 +190,7 @@ func spawn_notes_and_connections(dictionaries: Array):
 			inst._path = _notes[note]["path"]
 			inst._color = _notes[note]["color"]
 			inst.field_bg = field_bg
+			#inst.resizing()
 			field.add_child(inst)
 		
 	for connection in connections:
@@ -203,6 +207,7 @@ func spawn_notes_and_connections(dictionaries: Array):
 			match note._node_id:
 				note_1_id:
 					var output = OUTPUT_ANCHOR.instantiate()
+					print(note)
 					note.anchor_collector.add_child(output)
 					output.position = output_pos
 					inst.note_1 = note

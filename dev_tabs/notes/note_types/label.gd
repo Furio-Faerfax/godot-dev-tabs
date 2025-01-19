@@ -8,15 +8,22 @@ extends ColorRect
 @onready var note_bar: ColorRect = $"../note_bar"
 @onready var title: Label = $"../note_bar/note_bar/title"
 @onready var naming: Node2D = $naming
+@onready var rename: Button = $"../note_bar/note_bar/rename"
+@onready var close: Button = $"../note_bar/note_bar/close"
+@onready var note_bar_color_rect: ColorRect = $"../note_bar"
 
 const NOTE_TYPE = "label"
 
 func _ready() -> void:
 	#note.color()
 	note.note_type = NOTE_TYPE
-	connector.queue_free()
-	resizer.queue_free()
+	connector.hide()
+	resizer.hide()
 	color_picker_button.hide()
+	
+	close.hide()
+	rename.hide()
+	note_bar_color_rect.color[3] = 0
 	
 	
 	if note.title == "":
