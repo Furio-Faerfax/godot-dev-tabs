@@ -10,20 +10,15 @@ class_name node_connection
 @onready var text_node: Label = $line/interact/text
 @onready var interact: Node2D = $line/interact
 @onready var interact_overlay: ColorRect = $line/interact/interact
-
 @onready var selected_timeout: Timer = $selected_timeout
 
+@onready var connections_field: Node2D = null
 
 var is_connecting := false
-
-
-
 var reparentred := false
-
-
-var node_base: Node2D
 var text_init = true
 var text_: String = ""
+
 var text: String:
 	set(val):
 		text = val
@@ -39,32 +34,24 @@ var target :Vector2 :
  	
 var note_1
 var note_2
-
 var input
 var output
-
 var start :Vector2
-
 var arrow_1_target: Vector2
 var arrow_2_target: Vector2
-
 var is_on_load = false
-@onready var connections_field: Node2D = null
 
 
 func get_data() -> String:
-	#var data = {"type": "connection", "id_1": note_1._node_id, "id_2": note_2._node_id, "input_pos": input.position, "output_pos": output.position, "text": text}
 	var data_str = "type:connection|id_1:"+str(note_1._node_id)+"|id_2:"+str(note_2._node_id)+"|input_position:"+str(input.position.x)+"_"+str(input.position.y)+"|output_position:"+str(output.position.x)+"_"+str(output.position.y)+"|text:"+str(text)
-
 	return data_str
 
 
 func _ready() -> void:
+	Settings.connection_selection.connect(connection_selected)
 	adjust_target()
 	self.z_index = 100
 	naming.z_index = 101
-	Settings.connection_selection.connect(connection_selected)
-	
 	interact.position = start
 	text = text
 
@@ -96,17 +83,6 @@ func _process(_delta: float) -> void:
 			#print(naming.get_parent())
 			name_text.grab_focus()
 
-#
-#func _on_interact_gui_input(event: InputEvent) -> void:
-	#if event is InputEventMouseButton:
-		#if event.get_button_index() == 1:
-			#if event.is_action_pressed("mouse_left"):
-				#Events.focused_node = self
-				#Events.connection_selection.emit()
-			#
-		#if event.is_action_pressed("mouse_right"):
-			#Events.focused_node = null
-			#Events.connection_selection.emit()
 
 func _on_interact_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
@@ -120,13 +96,15 @@ func _on_name_text_gui_input(event: InputEvent) -> void:
 	if event.is_action_pressed("enter_rename"):
 		text = naming.get_node("name_text").text
 		naming.hide()
-		
+
+
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("f2_rename"):
 		if Settings.focused_note_connection == self:
 			naming.show()
 			naming.get_node("name_text").text = ""
 			name_text.grab_focus()
+
 
 func connection_selected():
 	if Settings.focused_note_connection == self:
@@ -135,10 +113,12 @@ func connection_selected():
 	else:
 		_change_color(Color.WHITE)
 
+
 func _change_color(val):
 	line.default_color = val
 	arrow_1.default_color = val
 	arrow_2.default_color = val
+
 
 func adjust_target():
 	if note_1 and note_2:
@@ -150,7 +130,6 @@ func adjust_target():
 	
 	if interact:
 		rotate_overlay()
-	
 
 
 func _on_selected_timeout_timeout() -> void:
@@ -158,10 +137,9 @@ func _on_selected_timeout_timeout() -> void:
 	connection_selected()
 
 
-
 func rotate_overlay():
 	var distance_start_target: float = target.distance_to(start)
-	#print(target)
+
 	var dir = target.direction_to(start)
 	var dirgree = dir.x * dir.y
 	interact.rotation_degrees = dirgree
@@ -170,6 +148,5 @@ func rotate_overlay():
 	$line/interact/arrow.position.x = distance_start_target
 	
 	interact.position = start
-	#naming.position = Vector2(start.x - start.distance_to(target) / 2, start.y - start.distance_to(target)/ 2)
 	var angle = start.angle_to_point(target)
 	interact.rotate(angle)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://cf8v77spj0qii"]
+[gd_scene load_steps=13 format=3 uid="uid://cf8v77spj0qii"]
 
 [ext_resource type="Script" path="res://dev_tabs/root.gd" id="1_527f6"]
 [ext_resource type="Theme" uid="uid://lfn137rvcqs6" path="res://dev_tabs/disabled_panel_bg.tres" id="2_upsdm"]
@@ -7,12 +7,11 @@
 [ext_resource type="Script" path="res://dev_tabs/editor.gd" id="5_b7r6v"]
 [ext_resource type="PackedScene" uid="uid://1av4nnxgw4sq" path="res://dev_tabs/drop_down/drop_down.tscn" id="6_ghe41"]
 [ext_resource type="Script" path="res://dev_tabs/notes/notes.gd" id="7_0s0iu"]
-[ext_resource type="Script" path="res://dev_tabs/notes/field.gd" id="8_1rli7"]
 [ext_resource type="Script" path="res://dev_tabs/notes/note_selector.gd" id="8_8c7a8"]
-[ext_resource type="PackedScene" uid="uid://ck5ejaqryj7ig" path="res://dev_tabs/notes/note_types/note.tscn" id="9_mmv30"]
+[ext_resource type="PackedScene" uid="uid://ck5ejaqryj7ig" path="res://dev_tabs/notes/note_types/note_note.tscn" id="9_mmv30"]
 [ext_resource type="PackedScene" uid="uid://dmv4jqjcu7nk0" path="res://dev_tabs/notes/note_types/note_image.tscn" id="10_dahrx"]
 [ext_resource type="PackedScene" uid="uid://cpvixe6pn4rv" path="res://dev_tabs/notes/note_types/note_border.tscn" id="11_5652t"]
-[ext_resource type="PackedScene" uid="uid://djvmlxxg6gobi" path="res://dev_tabs/notes/note_types/label.tscn" id="12_o66sl"]
+[ext_resource type="PackedScene" uid="uid://djvmlxxg6gobi" path="res://dev_tabs/notes/note_types/note_label.tscn" id="12_o66sl"]
 
 [node name="root" type="Control" node_paths=PackedStringArray("hud") groups=["root"]]
 layout_mode = 3
@@ -187,10 +186,6 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="new_note" type="Button" parent="canvas/tabs/notes/tab_splitter/notes/tools"]
-layout_mode = 2
-text = "New Note"
-
 [node name="save_notes" type="Button" parent="canvas/tabs/notes/tab_splitter/notes/tools"]
 layout_mode = 2
 text = "Save"
@@ -226,7 +221,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-script = ExtResource("8_1rli7")
 
 [node name="connections_field" type="Node2D" parent="canvas/tabs/notes/tab_splitter/notes/field_canvas/field"]
 unique_name_in_owner = true
@@ -267,7 +261,6 @@ cancel_button_text = "No"
 [connection signal="drop_button_pressed" from="canvas/tabs/notes/tab_splitter/editor/tools/drop_down" to="canvas/tabs/notes/tab_splitter/editor" method="_on_drop_down_drop_button_pressed"]
 [connection signal="text_changed" from="canvas/tabs/notes/tab_splitter/editor/text" to="canvas/tabs/notes/tab_splitter/editor" method="_on_text_text_changed"]
 [connection signal="gui_input" from="canvas/tabs/notes/tab_splitter/notes/field_bg" to="canvas/tabs/notes/tab_splitter/notes" method="_on_field_bg_gui_input"]
-[connection signal="pressed" from="canvas/tabs/notes/tab_splitter/notes/tools/new_note" to="canvas/tabs/notes/tab_splitter/notes" method="_on_new_note_pressed"]
 [connection signal="pressed" from="canvas/tabs/notes/tab_splitter/notes/tools/save_notes" to="canvas/tabs/notes/tab_splitter/notes" method="_on_save_notes_pressed"]
 [connection signal="pressed" from="canvas/tabs/notes/tab_splitter/notes/tools/load_notes" to="canvas/tabs/notes/tab_splitter/notes" method="_on_load_notes_pressed"]
 [connection signal="pressed" from="canvas/tabs/notes/tab_splitter/notes/tools/clear_field" to="canvas/tabs/notes/tab_splitter/notes" method="_on_clear_field_pressed"]

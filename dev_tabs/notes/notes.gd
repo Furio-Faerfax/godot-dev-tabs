@@ -1,4 +1,5 @@
 extends Control
+
 @onready var bg: ColorRect = $bg
 @onready var notes: Control = $"."
 @onready var editor: VBoxContainer = $"../editor"
@@ -7,17 +8,18 @@ extends Control
 @onready var field_canvas: Control = $field_canvas
 @onready var tab_splitter: HSplitContainer = $".."
 @onready var connections_field: Node2D = %connections_field
+@onready var autoload_notes: CheckButton = $tools/autoload_notes
 
 const NOTE_IMAGE = preload("res://dev_tabs/notes/note_types/note_image.tscn")
-const NOTE = preload("res://dev_tabs/notes/note_types/note.tscn")
+const NOTE = preload("res://dev_tabs/notes/note_types/note_note.tscn")
 const NOTE_BORDER = preload("res://dev_tabs/notes/note_types/note_border.tscn")
 const NOTE_TEMPLATE = preload("res://dev_tabs/notes/note_types/note_template.tscn")
-const LABEL = preload("res://dev_tabs/notes/note_types/label.tscn")
-@onready var autoload_notes: CheckButton = $tools/autoload_notes
+const LABEL = preload("res://dev_tabs/notes/note_types/note_label.tscn")
 
 const NODE_CONNECTION = preload("res://dev_tabs/notes/node_connection.tscn")
 const OUTPUT_ANCHOR = preload("res://dev_tabs/notes/output_anchor.tscn")
 const INPUT_ANCHOR = preload("res://dev_tabs/notes/input_anchor.tscn")
+
 var note_type = "image"
 var file = dev_tab_file_handler.new()
 var field_drag = false
@@ -27,10 +29,10 @@ var note_ids := -1
 func _ready() -> void:
 	Settings.note_autoload.connect(_autoload_notes)
 	tab_splitter.splitter_is_dragging_now.connect(_on_screen_resized)
+	_on_screen_resized()
 
 func _process(_delta: float) -> void:
 	if field_drag:
-		#offset = field.position - field_bg.position
 		field.position = ( field_bg.get_local_mouse_position()+offset)
 
 #region signal_connections
@@ -43,11 +45,10 @@ func _on_field_bg_gui_input(event: InputEvent) -> void:
 			if not event.pressed:
 				field_drag = false
 	if event.is_action_released("mouse_right_dev_tabs"):
-		_on_new_note_pressed()
+		_new_note()
  
-func _on_new_note_pressed() -> void:
+func _new_note() -> void:
 	note_ids += 1
-	
 	var inst
 	match note_type:
 		"note":
@@ -61,7 +62,6 @@ func _on_new_note_pressed() -> void:
 		_:
 			inst = NOTE_TEMPLATE.instantiate()
 			
-	#var inst = NOTE_TEMPLATE.instantiate()
 	inst.field_bg = field_bg
 	inst._node_id = note_ids
 	inst.position = field.get_local_mouse_position()
@@ -85,6 +85,18 @@ func _on_save_notes_pressed() -> void:
 		index += 1
 		
 	file.save(str(Settings.user_dir)+str(Settings.note_file), data_string)
+	
+func _on_screen_resized():
+	#field_bg.size.x = get_tree().root.get_viewport().get_size().x-notes.position.x-20
+	#field_bg.size.y = get_tree().root.get_viewport().get_size().y-13-10
+	field_canvas.size.x = get_tree().root.get_viewport().get_size().x-notes.position.x-20
+	field_canvas.size.y = get_tree().root.get_viewport().get_size().y-field_canvas.position.y-45
+
+	
+func _on_autoload_first_recent_toggled(toggled_on: bool) -> void:
+	Settings.change_setting("autoload_note", toggled_on)
+
+
 #endregion
 
 func clear_field():
@@ -96,13 +108,6 @@ func clear_field():
 				conec.queue_free()
 			continue
 		entry.queue_free()
-
-func _on_screen_resized():
-	#field_bg.size.x = get_tree().root.get_viewport().get_size().x-notes.position.x-20
-	#field_bg.size.y = get_tree().root.get_viewport().get_size().y-13-10
-	field_canvas.size.x = get_tree().root.get_viewport().get_size().x-notes.position.x-20
-	print(field_bg.size)
-	field_canvas.size.y = get_tree().root.get_viewport().get_size().y-field_canvas.position.y-45
 
 #region Loading and Parsing the Note File
 ## Load the notes file and split it up into two sepearte dictionaies
@@ -146,7 +151,6 @@ func _on_load_notes_pressed() -> void:
 ## Parsing the Dictionaries to the specified datatypes
 func parsing_loaded_data(_notes, connections) -> Array:
 	for note in _notes:
-		#print(note)
 		_notes[note]["id"] = _notes[note]["id"] as int
 		_notes[note]["position"] = Vector2(_notes[note]["position"].split("_")[0] as float, _notes[note]["position"].split("_")[1] as float)
 		_notes[note]["size"] = Vector2(_notes[note]["size"].split("_")[0] as float, _notes[note]["size"].split("_")[1] as float)
@@ -184,13 +188,12 @@ func spawn_notes_and_connections(dictionaries: Array):
 			inst.note_type = _notes[note]["type"]
 			inst.position = _notes[note]["position"]
 			inst._size = _notes[note]["size"]
-			#print(inst._size)
 			inst.title = _notes[note]["title"]
 			inst.text = _notes[note]["text"]
 			inst._path = _notes[note]["path"]
 			inst._color = _notes[note]["color"]
 			inst.field_bg = field_bg
-			#inst.resizing()
+			
 			field.add_child(inst)
 		
 	for connection in connections:
@@ -207,7 +210,6 @@ func spawn_notes_and_connections(dictionaries: Array):
 			match note._node_id:
 				note_1_id:
 					var output = OUTPUT_ANCHOR.instantiate()
-					print(note)
 					note.anchor_collector.add_child(output)
 					output.position = output_pos
 					inst.note_1 = note
@@ -225,16 +227,7 @@ func spawn_notes_and_connections(dictionaries: Array):
 		inst.note_1.connected_over.push_back(inst)
 		inst.note_2.connected_over.push_back(inst)
 		inst.is_on_load = true
-		#inst.on_load_update_text()
 		connections_field.add_child(inst)
-		#
-		#print(connections[connection])
-
-
-func _on_autoload_first_recent_toggled(toggled_on: bool) -> void:
-	Settings.change_setting("autoload_note", toggled_on)
-
-
 
 func _autoload_notes(boo):
 	if boo:

@@ -1,30 +1,28 @@
 extends ColorRect
+
 @onready var note: Node2D = $"../../.."
 @onready var note_bg_: ColorRect = $"../../note_bg"
 @onready var note_content: ColorRect = $"."
 @onready var open: Button = $open
 @onready var _image: TextureRect = $image
-#@onready var note_image_open_dialog: FileDialog = $"../../../note_image_open_dialog"
 @onready var note_image_open_dialog: FileDialog = $note_image_open_dialog
+
 const NOTE_TYPE = "image"
-	
+
 func _ready() -> void:
 	note.note_type = NOTE_TYPE
 	note_image_open_dialog.file_selected.connect(_on_image_selected)
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta: float) -> void:
-	pass
-	
+
 func fill_data():
 	pass
-	#note.text = text_edit.text
 
 
 func update_data():
 	if note._path != "":
 		load_image(note._path)
-	pass
+
+
 func change_color(_color):
 	note_content.color = color
 	note_bg_.color = color
@@ -38,9 +36,6 @@ func _on_image_selected(path):
 	split = split[split.size()-1]
 	if split == "png" or split == "jpeg" or split == "jpg" or split == "svg":
 		load_image(path)
-
-	#image.
-	pass
 
 
 func _on_image_gui_input(event: InputEvent) -> void:

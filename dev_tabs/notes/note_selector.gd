@@ -1,10 +1,13 @@
 extends Node
+
 @onready var notes: Control = $"../.."
+@onready var entries: VBoxContainer = $entries
 
 @export var note_types:Array
-@onready var entries: VBoxContainer = $entries
+
 const DROP_DOWN_BUTTON = preload("res://dev_tabs/drop_down/drop_down_button.tscn")
-# Called when the node enters the scene tree for the first time.
+
+## This generates the Buttons for any Note type  for the scrollcontainer to select
 func _ready() -> void:
 	for entry in note_types.size():
 		var inst = DROP_DOWN_BUTTON.instantiate()
@@ -19,9 +22,5 @@ func _ready() -> void:
 		tmp.queue_free()
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
-
-func _on_pressed(type, cont):
+func _on_pressed(type, _content):
 	notes.note_type = type

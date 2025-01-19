@@ -6,13 +6,12 @@ signal load_editor_first_recent(boo)
 signal note_autoload(boo)
 
 signal connection_selection()
-
-
-
 signal connection_area_entered(id_connection: int, area: String)
 signal connection_area_exited(id_connection: int, area: String)
 
 @onready var root = $"."
+
+const VERSION = "v1.0.0"
 
 var dev_mode = true
 var note_mode = true
@@ -28,12 +27,9 @@ var _file = dev_tab_file_handler.new()
 var user_dir = "user://"
 var setting_file = "settings.txt"
 var note_file = "notes.txt"
-func print_signal(str):
-	print(str)
+
 ## Adding a input key to the project via code, to ensure that any project includes this feature naturally, disabling later when development is done!
 func _ready():
-	
-		
 	InputMap.add_action("switch_note_mode")
 	var ev = InputEventKey.new()
 	ev.keycode = KEY_F1
@@ -69,11 +65,11 @@ func _ready():
 	#_open_user_directory()
 
 
-
 func _into_void(_i, _a):
 	pass
 func _into_void_2():
 	pass
+
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
@@ -98,7 +94,6 @@ func change_setting(setting, boo):
 			settings["autoload_editor_first_recent"] = boo
 		"autoload_note":
 			settings["autoload_note"] = boo
-			
 		_:
 			pass
 	
@@ -112,6 +107,7 @@ func change_setting(setting, boo):
 		#print(settings_str)
 	_file.save(str(user_dir)+str(setting_file), settings_str)
 	#print(settings)
+
 
 func load_settings():
 	var arr = _file.load_reloaded(str(user_dir)+str(setting_file), "|")

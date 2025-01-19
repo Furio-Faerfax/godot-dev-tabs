@@ -1,4 +1,4 @@
-# godot-dev-tabs
+# godot-dev-tabs v1.0.0
 This utility tool, is made to make development of games easier.
 It allows to toggle of and on a mode to view the Game in the dev/game mode, in devmode, you can switch between tabs to navigate thgrough the tool.
 currently I planned a note taking plane and a gdd(or other documents) view/editor, to support quick access without switching between apps
@@ -15,17 +15,23 @@ Currently it just works for 2D Games
 
 ##############################
 
+The editor lets you save and load textfiles,
+the note taking view, will add a new note when you click the right mouse button,
+	if you hit the save button(currently only one note file is possible, may extend it in the future), the note will be stored in the user folder of the game
+you can toggle the autoload feature in both views seperately, in the editor it will be the last file edited
+
+##############################
+
 Currently available features:
 	- Tab View
+	- editor to load textfiles and and save them again, a recent file history is build in, and currently limited to 10 files, the history(not the actual files) are stored in the user directory of the game
+	- Note taking
 
 Currently in Progress
-	- Editor which can load files into the editor and save them again, a recent file history is build in, and currently limited to 10 files, these are stored in the user directory of the game
-
+	
 
 Roadmap:
 	Definitly:
-		- Note taking
 	Nice to have:
-		- 
 	Maybe, maybe not:
 		- basic pixel art editor to scratch out some art quickly

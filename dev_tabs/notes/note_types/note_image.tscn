@@ -28,8 +28,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = SubResource("ImageTexture_0xe8k")
-expand_mode = 2
-stretch_mode = 4
+expand_mode = 1
 
 [node name="open" type="Button" parent="container/VBoxContainer/note_content" index="2"]
 layout_mode = 1

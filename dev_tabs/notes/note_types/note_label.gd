@@ -1,6 +1,6 @@
 extends ColorRect
-@onready var note: Node2D = $"../../.."
 
+@onready var note: Node2D = $"../../.."
 @onready var connector: Control = $"../../connector"
 @onready var resizer: ColorRect = $"../../resizer"
 @onready var note_bg: ColorRect = $"../../note_bg"
@@ -15,7 +15,6 @@ extends ColorRect
 const NOTE_TYPE = "label"
 
 func _ready() -> void:
-	#note.color()
 	note.note_type = NOTE_TYPE
 	connector.hide()
 	resizer.hide()
@@ -25,15 +24,12 @@ func _ready() -> void:
 	rename.hide()
 	note_bar_color_rect.color[3] = 0
 	
-	
 	if note.title == "":
 		note._color = Color.WHITE
 		naming.show()
 		naming.get_node("name_text").grab_focus()
 
-func _process(_delta: float) -> void:
-	pass
-	
+
 func fill_data():
 	pass
 
@@ -42,14 +38,9 @@ func update_data():
 	note_bar.color[3] = 0
 	note_bg.color = Color(0,0,0,0)
 	self.color = Color(0,0,0,0)
-	pass
 
 func change_color(_color):
-	#note_content.color = color
-	#note_bg_.color = color
 	title.label_settings.font_color = _color
-
-
 
 
 func _on_name_text_gui_input(event: InputEvent) -> void:
